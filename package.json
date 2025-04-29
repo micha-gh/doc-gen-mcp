@@ -1,0 +1,22 @@
+{
+  "name": "doc-gen-mcp",
+  "version": "0.1.0",
+  "description": "Generischer Documentation Generator MCP für Cursor AI (Node.js, stdio)",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest"
+  },
+  "keywords": [
+    "documentation",
+    "generator",
+    "mcp",
+    "cursor-ai"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
