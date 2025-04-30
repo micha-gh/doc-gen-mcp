@@ -8,6 +8,147 @@
 
 ---
 
+## Using AI Documentation in Cursor
+
+You can use the CLI with AI support directly from within the Cursor editor by defining a custom command. This allows you to generate Markdown documentation for your code using any supported AI provider, right from your development environment.
+
+### Example: Cursor Command for AI-Powered Documentation
+
+Add the following to your Cursor command configuration (e.g., `.cursor/commands.json` or via the Command Panel):
+
+```json
+{
+  "name": "Generate AI Documentation (OpenAI)",
+  "command": "bin/gendoc.js --input ./src --output ./docs/ai-doc.md --ai --ai-provider openai --openai-key $OPENAI_API_KEY",
+  "description": "Generate Markdown documentation from code using OpenAI (GPT) and save to docs/ai-doc.md"
+}
+```
+
+- Adjust the CLI path (`bin/gendoc.js`), input folder (`./src`), and output file (`./docs/ai-doc.md`) as needed.
+- Set your API key as an environment variable (recommended) or insert it directly (not recommended for security reasons).
+
+#### For Other Providers
+Change the command line to use your preferred provider and key:
+
+**Anthropic Claude:**
+```json
+{
+  "name": "Generate AI Documentation (Claude)",
+  "command": "bin/gendoc.js --input ./src --output ./docs/ai-claude-doc.md --ai --ai-provider anthropic --anthropic-key $ANTHROPIC_API_KEY",
+  "description": "Generate Markdown documentation from code using Anthropic Claude"
+}
+```
+
+**Google Gemini:**
+```json
+{
+  "name": "Generate AI Documentation (Gemini)",
+  "command": "bin/gendoc.js --input ./src --output ./docs/ai-gemini-doc.md --ai --ai-provider gemini --gemini-key $GEMINI_API_KEY",
+  "description": "Generate Markdown documentation from code using Google Gemini"
+}
+```
+
+**Cohere:**
+```json
+{
+  "name": "Generate AI Documentation (Cohere)",
+  "command": "bin/gendoc.js --input ./src --output ./docs/ai-cohere-doc.md --ai --ai-provider cohere --cohere-key $COHERE_API_KEY",
+  "description": "Generate Markdown documentation from code using Cohere"
+}
+```
+
+**Azure OpenAI:**
+```json
+{
+  "name": "Generate AI Documentation (Azure OpenAI)",
+  "command": "bin/gendoc.js --input ./src --output ./docs/ai-azure-doc.md --ai --ai-provider azure-openai --azure-openai-key $AZURE_OPENAI_KEY --azure-openai-endpoint \"https://<resource>.openai.azure.com/openai/deployments/<deployment>/chat/completions?api-version=2024-02-15-preview\"",
+  "description": "Generate Markdown documentation from code using Azure OpenAI"
+}
+```
+
+#### For the Current File (if supported by Cursor)
+
+```json
+{
+  "name": "Generate AI Doc for Current File",
+  "command": "bin/gendoc.js --input ${file} --output ./docs/ai-doc-${fileBasename}.md --ai --ai-provider openai --openai-key $OPENAI_API_KEY",
+  "description": "Generate AI documentation for the current file"
+}
+```
+
+- `${file}` and `${fileBasename}` are placeholders supported by many editors/Cursor for the currently open file.
+
+### How to Use
+- Open the Command Panel in Cursor (usually `Cmd+Shift+P` or `Ctrl+Shift+P`).
+- Search for your custom command (e.g., "Generate AI Documentation (OpenAI)").
+- Run the command. The generated Markdown documentation will be saved to the specified output file, which you can open directly in Cursor.
+
+---
+
+## CLI Usage
+
+You can generate Markdown documentation from either a JSON/config/rulebase file or directly from code files (extracting JSDoc/TypeScript comments) using the CLI script:
+
+```bash
+bin/gendoc.js --input <file|dir> [--output <file>] [--config <file>] [--ai --ai-provider <provider> --<provider>-key <key> ...]
+```
+
+- `--input`   Path to a JSON/config file, a code file (.js/.ts), or a directory containing code files
+- `--output`  Output Markdown file (default: stdout)
+- `--config`  Optional config JSON file (see global config in this README)
+- `--ai`      Use AI to generate documentation from code (optional)
+- `--ai-provider`  AI provider: `openai`, `anthropic`, `gemini`, `cohere`, `azure-openai`
+- `--openai-key`   OpenAI API key (for `openai`)
+- `--anthropic-key` Anthropic API key (for `anthropic`)
+- `--gemini-key`    Google Gemini API key (for `gemini`)
+- `--cohere-key`    Cohere API key (for `cohere`)
+- `--azure-openai-key` Azure OpenAI API key (for `azure-openai`)
+- `--azure-openai-endpoint` Azure OpenAI endpoint (for `azure-openai`)
+
+### Examples
+
+**Generate documentation from a JSON file:**
+```bash
+bin/gendoc.js --input ./example-input.json --output ./docs/generated.md
+```
+
+**Generate documentation from a single code file:**
+```bash
+bin/gendoc.js --input ./src/myModule.js --output ./docs/code-doc.md
+```
+
+**Generate documentation from all code files in a directory:**
+```bash
+bin/gendoc.js --input ./src --output ./docs/all-code-doc.md
+```
+
+**Generate AI-powered documentation from code (OpenAI):**
+```bash
+bin/gendoc.js --input ./src --output ./docs/ai-code-doc.md --ai --ai-provider openai --openai-key $OPENAI_API_KEY
+```
+
+**Generate AI-powered documentation from code (Anthropic Claude):**
+```bash
+bin/gendoc.js --input ./src --output ./docs/ai-claude-doc.md --ai --ai-provider anthropic --anthropic-key $ANTHROPIC_API_KEY
+```
+
+**Generate AI-powered documentation from code (Google Gemini):**
+```bash
+bin/gendoc.js --input ./src --output ./docs/ai-gemini-doc.md --ai --ai-provider gemini --gemini-key $GEMINI_API_KEY
+```
+
+**Generate AI-powered documentation from code (Cohere):**
+```bash
+bin/gendoc.js --input ./src --output ./docs/ai-cohere-doc.md --ai --ai-provider cohere --cohere-key $COHERE_API_KEY
+```
+
+**Generate AI-powered documentation from code (Azure OpenAI):**
+```bash
+bin/gendoc.js --input ./src --output ./docs/ai-azure-doc.md --ai --ai-provider azure-openai --azure-openai-key $AZURE_OPENAI_KEY --azure-openai-endpoint "https://<resource>.openai.azure.com/openai/deployments/<deployment>/chat/completions?api-version=2024-02-15-preview"
+```
+
+---
+
 ## Overview
 
 This tool is a generic, extensible documentation generator that communicates via the Model Context Protocol (MCP, stdio). It supports various input formats (e.g., rulebases, API definitions, configuration objects) and generates structured Markdown or JSON documentation.  
