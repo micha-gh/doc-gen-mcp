@@ -1,58 +1,62 @@
 # doc-gen-mcp
 
-**Generischer Documentation Generator MCP für Cursor AI**
+[![Build Status](https://github.com/micha-gh/doc-gen-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/micha-gh/doc-gen-mcp/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Changelog](https://img.shields.io/badge/Changelog-0.1.0-blue)](CHANGELOG.md)
+
+**Generic Documentation Generator MCP for Cursor AI**
 
 ---
 
-## Überblick
+## Overview
 
-Dieses Tool ist ein generischer, erweiterbarer Dokumentationsgenerator, der über das Model Context Protocol (MCP, stdio) angesprochen wird. Es unterstützt verschiedene Eingabeformate (z. B. Rulebases, API-Definitionen, Konfigurationsobjekte) und erzeugt strukturierte Markdown- oder JSON-Dokumentation.  
-Die Architektur ist auf Erweiterbarkeit, Robustheit und Automatisierung ausgelegt.
+This tool is a generic, extensible documentation generator that communicates via the Model Context Protocol (MCP, stdio). It supports various input formats (e.g., rulebases, API definitions, configuration objects) and generates structured Markdown or JSON documentation.  
+The architecture is designed for extensibility, robustness, and automation.
 
 ---
 
 ## Features
 
-- **Node.js MCP-Server** (Kommunikation über stdio, JSON-Kommandos)
-- **Globale Konfiguration (`config`)**
-  - Programmiersprachen für Codebeispiele/Snippets (`languages`)
-  - Standard-Output-Stil (`outputStyle`)
-  - Standardsprache (`defaultLang`)
-  - Feature-Toggles (`features`)
-  - Kann global oder pro Command übergeben werden
+- **Node.js MCP server** (communication via stdio, JSON commands)
+- **Global configuration (`config`)**
+  - Programming languages for code examples/snippets (`languages`)
+  - Default output style (`outputStyle`)
+  - Default language (`defaultLang`)
+  - Feature toggles (`features`)
+  - Can be provided globally or per command
 - **Command: `generateDocsFromInput`**
-  - Automatische Erkennung und Normalisierung von Eingabeformaten (`entries`, `rules`, `api`, `config`)
-  - Gruppierung nach Kategorien, klare Überschriften
-  - Fehlerprüfung und Markierung ungültiger Einträge
-  - Anpassbarer Output-Stil (Überschriften-Level, Bulletpoints)
-  - Mehrsprachigkeit vorbereitet (Deutsch/Englisch)
-  - Ausgabe als Markdown (Standard) oder strukturierte JSON-Dokumentation
-  - Gibt unterstützte Programmiersprachen und Codeblöcke aus, wenn gewünscht
+  - Automatic detection and normalization of input formats (`entries`, `rules`, `api`, `config`)
+  - Grouping by categories, clear section headings
+  - Error checking and marking of invalid entries
+  - Customizable output style (heading levels, bullet points)
+  - Multilingual support (English/German)
+  - Output as Markdown (default) or structured JSON documentation
+  - Outputs supported programming languages and code blocks if desired
 - **Command: `validateDocumentation`**
-  - Validiert Einträge auf Pflichtfelder (`title`, `content`)
-  - Gibt Issues mit Index, Fehlergrund und Eintrag zurück
-  - Mehrsprachige Ausgabe (de/en)
+  - Validates entries for required fields (`title`, `content`)
+  - Returns issues with index, error reason, and entry
+  - Multilingual output (en/de)
 - **Command: `generateDocsFromDiff`**
-  - Erzeugt eine Änderungsdokumentation (Added/Changed/Removed) aus zwei Ständen (z. B. Feature-Branch vs. Main)
-  - Unterstützt alle Formate wie `generateDocsFromInput`
-  - Ausgabe als Markdown (Changelog-Style) oder JSON
-- **Automatisierte Tests** (Jest, ESM-ready)
-- **Erweiterbar** für weitere Commands, Formate, Sprachen, Output-Stile
+  - Generates a documentation diff (Added/Changed/Removed) between two states (e.g., feature branch vs. main)
+  - Supports all formats like `generateDocsFromInput`
+  - Output as Markdown (changelog style) or JSON
+- **Automated tests** (Jest, ESM-ready)
+- **Extensible** for more commands, formats, languages, output styles
 
 ---
 
-## Projektstruktur
+## Project Structure
 
 ```
-index.js                # MCP-Server Einstiegspunkt, Command-Registry, stdio-Handling
-lib/generateDocs.js     # Kernlogik für Doku-Generierung & Validierung
-lib/utils.js            # Hilfsfunktionen (Format-Erkennung, Normalisierung)
-test/                   # Unit-Tests (Jest, ESM)
+index.js                # MCP server entry point, command registry, stdio handling
+lib/generateDocs.js     # Core logic for documentation generation & validation
+lib/utils.js            # Helper functions (format detection, normalization)
+test/                   # Unit tests (Jest, ESM)
 ```
 
 ---
 
-## Nutzung
+## Usage
 
 ### 1. Installation & Start
 
@@ -61,10 +65,10 @@ npm install
 npm start
 ```
 
-### 2. Kommunikation (MCP-Server)
+### 2. Communication (MCP server)
 
-Der Server erwartet JSON-Kommandos über stdin und antwortet über stdout.  
-Beispiel für ein Kommando (als einzelne Zeile):
+The server expects JSON commands via stdin and responds via stdout.  
+Example command (as a single line):
 
 ```json
 {
@@ -80,10 +84,10 @@ Beispiel für ein Kommando (als einzelne Zeile):
   }
 }
 ```
-- Die Config kann auch direkt in `args` übergeben werden (wird zusammengeführt).
-- Alle Commands berücksichtigen die Config.
+- The config can also be provided directly in `args` (it will be merged).
+- All commands respect the config.
 
-### 3. Unterstützte Input-Formate
+### 3. Supported Input Formats
 
 - **entries**:  
   ```json
@@ -102,15 +106,15 @@ Beispiel für ein Kommando (als einzelne Zeile):
   { "config": [ { "section": "General", "key": "timeout", "value": 30 } ] }
   ```
 
-### 4. Output-Optionen
+### 4. Output Options
 
-- **Markdown** (Standard):  
-  Gruppiert nach Kategorien, Überschriften-Level und Bulletpoints anpassbar.
-  - Wenn `languages` gesetzt ist und Einträge Codebeispiele enthalten, werden diese als Codeblöcke ausgegeben.
+- **Markdown** (default):  
+  Grouped by categories, customizable heading levels and bullet points.
+  - If `languages` is set and entries contain code examples, these will be output as code blocks.
 - **JSON**:  
-  Strukturierte Ausgabe, gruppiert nach Kategorien.
+  Structured output, grouped by categories.
 
-### 5. Validierung
+### 5. Validation
 
 ```json
 {
@@ -121,7 +125,7 @@ Beispiel für ein Kommando (als einzelne Zeile):
   }
 }
 ```
-Antwort:
+Response:
 ```json
 {
   "result": {
@@ -134,26 +138,26 @@ Antwort:
 }
 ```
 
-### 6. Änderungsdokumentation aus einem Diff
+### 6. Documentation Diff
 
 **Command:** `generateDocsFromDiff`
 
-- **Zweck:** Erzeugt eine Doku der Änderungen zwischen zwei Ständen (z. B. Feature-Branch vs. Main)
+- **Purpose:** Generates documentation of changes between two states (e.g., feature branch vs. main)
 - **Input:**
   ```json
   {
     "command": "generateDocsFromDiff",
     "args": {
-      "old": { ... },   // z. B. main/integration
-      "new": { ... },   // z. B. feature-branch
+      "old": { ... },   // e.g., main/integration
+      "new": { ... },   // e.g., feature branch
       "outputFormat": "markdown", // optional
       "lang": "en" // optional
     }
   }
   ```
 - **Output:**
-  - Markdown mit Sektionen "Added", "Changed", "Removed"
-  - Oder strukturierte JSON-Ausgabe:
+  - Markdown with sections "Added", "Changed", "Removed"
+  - Or structured JSON output:
     ```json
     {
       "result": {
@@ -165,7 +169,7 @@ Antwort:
       }
     }
     ```
-- **Beispiel für Markdown-Output:**
+- **Example Markdown Output:**
   ```markdown
   # Documentation Diff
 
@@ -183,17 +187,17 @@ Antwort:
 
 ---
 
-## Globale Konfiguration (`config`)
+## Global Configuration (`config`)
 
-Die zentrale Config kann auf Top-Level oder pro Command/args übergeben werden. Sie wird automatisch zusammengeführt.
+The central config can be provided at the top level or per command/args. It is automatically merged.
 
-**Unterstützte Felder:**
-- `languages`: Liste unterstützter Programmiersprachen (z. B. für Codebeispiele)
-- `outputStyle`: Standard-Output-Stil (z. B. Überschriften-Level, Bulletpoints)
-- `defaultLang`: Standardsprache ("de" oder "en")
-- `features`: Feature-Toggles (z. B. `{ "validate": true }`)
+**Supported fields:**
+- `languages`: List of supported programming languages (e.g., for code examples)
+- `outputStyle`: Default output style (e.g., heading levels, bullet points)
+- `defaultLang`: Default language ("de" or "en")
+- `features`: Feature toggles (e.g., `{ "validate": true }`)
 
-**Beispiel:**
+**Example:**
 ```json
 {
   "config": {
@@ -221,7 +225,7 @@ Die zentrale Config kann auf Top-Level oder pro Command/args übergeben werden. 
 }
 ```
 
-**Ergebnis (Markdown):**
+**Result (Markdown):**
 ```
 # Documentation
 
@@ -244,53 +248,53 @@ function getUser() {}
 
 ---
 
-## Erweiterungsmöglichkeiten
+## Extensibility
 
-### Neue Eingabeformate unterstützen
+### Support new input formats
 
-- In `lib/utils.js` die Funktion `detectFormat` und `normalizeEntries` erweitern.
-- Beispiel: Für ein neues Feld `myFormat` einfach einen neuen Fall ergänzen.
+- Extend the `detectFormat` and `normalizeEntries` functions in `lib/utils.js`.
+- Example: For a new field `myFormat`, simply add a new case.
 
-### Weitere Output-Stile
+### More output styles
 
-- In `generateDocsFromInput` die Markdown-Generierung anpassen.
-- Zusätzliche Optionen (z. B. Tabellen, Codeblöcke, Links) können über das Argument `outputStyle` gesteuert werden.
+- Adjust Markdown generation in `generateDocsFromInput`.
+- Additional options (e.g., tables, code blocks, links) can be controlled via the `outputStyle` argument.
 
-### Mehrsprachigkeit
+### Multilingual support
 
-- Alle Ausgaben und Fehlermeldungen sind bereits auf Deutsch/Englisch vorbereitet.
-- Weitere Sprachen können durch Ergänzen der Textbausteine in `generateDocsFromInput` und `validateDocumentation` hinzugefügt werden.
+- All output and error messages are already prepared for English/German.
+- Add more languages by extending the text blocks in `generateDocsFromInput` and `validateDocumentation`.
 
-### Neue Commands
+### New commands
 
-- In `index.js` einfach eine neue Funktion importieren und im `commands`-Objekt registrieren.
-- Beispiel: `coverageCheck`, `exportToHtml`, `summarizeDocs` etc.
+- Simply import a new function in `index.js` and register it in the `commands` object.
+- Example: `coverageCheck`, `exportToHtml`, `summarizeDocs`, etc.
 
-### Tests erweitern
+### Extend tests
 
-- Im Ordner `test/` neue `.test.mjs`-Dateien anlegen.
-- Bestehende Tests als Vorlage nutzen.
-
----
-
-## Best Practices & Hinweise
-
-- **Fehlerhafte Einträge** werden im Markdown explizit markiert, in der JSON-Ausgabe erscheinen sie mit Fehlergrund.
-- **Leere oder unbekannte Formate** werden mit einer klaren Fehlermeldung abgelehnt.
-- **Automatisierte Tests** sichern die Kernlogik ab und sollten bei jeder Erweiterung ergänzt werden.
-- **ESM-Only:** Das Projekt nutzt moderne ES-Module (`import`/`export`). Jest ist entsprechend konfiguriert.
+- Add new `.test.mjs` files in the `test/` folder.
+- Use existing tests as templates.
 
 ---
 
-## Sinnvolle, noch nicht umgesetzte Features
+## Best Practices & Notes
 
-- **Coverage-Check:** Prüfen, ob alle erwarteten Kategorien/Einträge abgedeckt sind.
-- **Format-Validierung:** Z. B. für API-Definitionen spezielle Felder prüfen.
-- **Doku-Export:** Ausgabe als HTML, PDF, etc.
-- **Interaktive CLI:** Für lokale Nutzung ohne MCP.
-- **Doku-Import:** Automatisches Einlesen aus bestehenden Markdown-Dateien.
-- **Live-Preview:** Webserver für Vorschau der generierten Dokumentation.
+- **Invalid entries** are explicitly marked in Markdown; in JSON output, they appear with an error reason.
+- **Empty or unknown formats** are rejected with a clear error message.
+- **Automated tests** secure the core logic and should be extended with every new feature.
+- **ESM-only:** The project uses modern ES modules (`import`/`export`). Jest is configured accordingly.
 
 ---
 
-**Fragen, Wünsche oder Erweiterungen? Einfach Command oder Feature beschreiben – das System ist darauf ausgelegt, schnell angepasst zu werden!** 
+## Useful, not yet implemented features
+
+- **Coverage check:** Check if all expected categories/entries are covered.
+- **Format validation:** E.g., check for specific fields in API definitions.
+- **Doc export:** Output as HTML, PDF, etc.
+- **Interactive CLI:** For local use without MCP.
+- **Doc import:** Automatically read from existing Markdown files.
+- **Live preview:** Web server for previewing generated documentation.
+
+---
+
+**Questions, requests, or suggestions? Just describe the command or feature – the system is designed for quick adaptation!** 

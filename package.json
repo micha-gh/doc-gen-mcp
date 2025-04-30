@@ -14,7 +14,15 @@
     "mcp",
     "cursor-ai"
   ],
-  "author": "",
+  "author": "Michael Tittmar <michael.tittmar@googlemail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/micha-gh/doc-gen-mcp.git"
+  },
+  "bugs": {
+    "url": "https://github.com/micha-gh/doc-gen-mcp/issues"
+  },
+  "homepage": "https://github.com/micha-gh/doc-gen-mcp#readme",
   "license": "MIT",
   "devDependencies": {
     "jest": "^29.7.0"
