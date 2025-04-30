@@ -8,13 +8,97 @@
 
 ---
 
-## Using AI Documentation in Cursor
+## Overview
+
+doc-gen-mcp is a generic, extensible documentation generator for codebases, APIs, rulebases, and configs. It supports classic and AI-powered documentation, works with the Model Context Protocol (MCP, stdio), and is designed for robust automation and integration with modern developer tools like Cursor AI.
+
+---
+
+## Features
+
+- **Node.js MCP server** (stdio, JSON commands)
+- **Flexible input**: JSON, rulebase, API, config, or code files (JSDoc/TypeScript comments)
+- **AI-powered documentation**: OpenAI, Anthropic, Gemini, Cohere, Azure OpenAI
+- **Global configuration**: languages, output style, feature toggles
+- **Markdown or JSON output**: Grouped by category, customizable
+- **Validation and diff**: Validate docs, generate changelogs
+- **Multilingual**: English/German, easily extensible
+- **Extensible**: Add new formats, commands, output styles
+- **Automated tests**: Jest, ESM-ready
+
+---
+
+## Installation
+
+```bash
+npm install
+```
+
+---
+
+## Quick Start / CLI Usage
+
+Generate Markdown documentation from JSON/config/rulebase or code files:
+
+```bash
+bin/gendoc.js --input <file|dir> [--output <file>] [--config <file>] [--ai --ai-provider <provider> --<provider>-key <key> ...]
+```
+
+**Examples:**
+
+- From JSON:
+  ```bash
+  bin/gendoc.js --input ./example-input.json --output ./docs/generated.md
+  ```
+- From a code file:
+  ```bash
+  bin/gendoc.js --input ./src/myModule.js --output ./docs/code-doc.md
+  ```
+- From a directory of code files:
+  ```bash
+  bin/gendoc.js --input ./src --output ./docs/all-code-doc.md
+  ```
+- AI-powered (OpenAI):
+  ```bash
+  bin/gendoc.js --input ./src --output ./docs/ai-code-doc.md --ai --ai-provider openai --openai-key $OPENAI_API_KEY
+  ```
+
+---
+
+## Input & Output Formats
+
+### Supported Input Formats
+
+- **entries**:
+  ```json
+  { "entries": [ { "category": "API", "title": "getUser", "content": "Returns a user." } ] }
+  ```
+- **rules**:
+  ```json
+  { "rules": [ { "id": "R1", "name": "Rule 1", "description": "Desc" } ] }
+  ```
+- **api**:
+  ```json
+  { "api": [ { "group": "User", "name": "getUser", "description": "Returns a user." } ] }
+  ```
+- **config**:
+  ```json
+  { "config": [ { "section": "General", "key": "timeout", "value": 30 } ] }
+  ```
+- **Code files**: Extracts JSDoc/TypeScript comments from `.js`/`.ts` files.
+
+### Output Options
+
+- **Markdown** (default): Grouped by categories, customizable heading levels and bullet points.
+- **JSON**: Structured output, grouped by categories.
+
+---
+
+## AI-Powered Documentation & Cursor Integration
 
 You can use the CLI with AI support directly from within the Cursor editor by defining a custom command. This allows you to generate Markdown documentation for your code using any supported AI provider, right from your development environment.
 
 ### Example: Cursor Command for AI-Powered Documentation
-
-Add the following to your Cursor command configuration (e.g., `.cursor/commands.json` or via the Command Panel):
 
 ```json
 {
@@ -24,47 +108,11 @@ Add the following to your Cursor command configuration (e.g., `.cursor/commands.
 }
 ```
 
-- Adjust the CLI path (`bin/gendoc.js`), input folder (`./src`), and output file (`./docs/ai-doc.md`) as needed.
-- Set your API key as an environment variable (recommended) or insert it directly (not recommended for security reasons).
+- Adjust the CLI path, input folder, and output file as needed.
+- Set your API key as an environment variable (recommended).
 
-#### For Other Providers
-Change the command line to use your preferred provider and key:
-
-**Anthropic Claude:**
-```json
-{
-  "name": "Generate AI Documentation (Claude)",
-  "command": "bin/gendoc.js --input ./src --output ./docs/ai-claude-doc.md --ai --ai-provider anthropic --anthropic-key $ANTHROPIC_API_KEY",
-  "description": "Generate Markdown documentation from code using Anthropic Claude"
-}
-```
-
-**Google Gemini:**
-```json
-{
-  "name": "Generate AI Documentation (Gemini)",
-  "command": "bin/gendoc.js --input ./src --output ./docs/ai-gemini-doc.md --ai --ai-provider gemini --gemini-key $GEMINI_API_KEY",
-  "description": "Generate Markdown documentation from code using Google Gemini"
-}
-```
-
-**Cohere:**
-```json
-{
-  "name": "Generate AI Documentation (Cohere)",
-  "command": "bin/gendoc.js --input ./src --output ./docs/ai-cohere-doc.md --ai --ai-provider cohere --cohere-key $COHERE_API_KEY",
-  "description": "Generate Markdown documentation from code using Cohere"
-}
-```
-
-**Azure OpenAI:**
-```json
-{
-  "name": "Generate AI Documentation (Azure OpenAI)",
-  "command": "bin/gendoc.js --input ./src --output ./docs/ai-azure-doc.md --ai --ai-provider azure-openai --azure-openai-key $AZURE_OPENAI_KEY --azure-openai-endpoint \"https://<resource>.openai.azure.com/openai/deployments/<deployment>/chat/completions?api-version=2024-02-15-preview\"",
-  "description": "Generate Markdown documentation from code using Azure OpenAI"
-}
-```
+#### Other Providers
+- Change the command line to use your preferred provider and key (see full README for examples for Anthropic, Gemini, Cohere, Azure OpenAI).
 
 #### For the Current File (if supported by Cursor)
 
@@ -76,265 +124,15 @@ Change the command line to use your preferred provider and key:
 }
 ```
 
-- `${file}` and `${fileBasename}` are placeholders supported by many editors/Cursor for the currently open file.
-
-### How to Use
-- Open the Command Panel in Cursor (usually `Cmd+Shift+P` or `Ctrl+Shift+P`).
-- Search for your custom command (e.g., "Generate AI Documentation (OpenAI)").
-- Run the command. The generated Markdown documentation will be saved to the specified output file, which you can open directly in Cursor.
-
----
-
-## CLI Usage
-
-You can generate Markdown documentation from either a JSON/config/rulebase file or directly from code files (extracting JSDoc/TypeScript comments) using the CLI script:
-
-```bash
-bin/gendoc.js --input <file|dir> [--output <file>] [--config <file>] [--ai --ai-provider <provider> --<provider>-key <key> ...]
-```
-
-- `--input`   Path to a JSON/config file, a code file (.js/.ts), or a directory containing code files
-- `--output`  Output Markdown file (default: stdout)
-- `--config`  Optional config JSON file (see global config in this README)
-- `--ai`      Use AI to generate documentation from code (optional)
-- `--ai-provider`  AI provider: `openai`, `anthropic`, `gemini`, `cohere`, `azure-openai`
-- `--openai-key`   OpenAI API key (for `openai`)
-- `--anthropic-key` Anthropic API key (for `anthropic`)
-- `--gemini-key`    Google Gemini API key (for `gemini`)
-- `--cohere-key`    Cohere API key (for `cohere`)
-- `--azure-openai-key` Azure OpenAI API key (for `azure-openai`)
-- `--azure-openai-endpoint` Azure OpenAI endpoint (for `azure-openai`)
-
-### Examples
-
-**Generate documentation from a JSON file:**
-```bash
-bin/gendoc.js --input ./example-input.json --output ./docs/generated.md
-```
-
-**Generate documentation from a single code file:**
-```bash
-bin/gendoc.js --input ./src/myModule.js --output ./docs/code-doc.md
-```
-
-**Generate documentation from all code files in a directory:**
-```bash
-bin/gendoc.js --input ./src --output ./docs/all-code-doc.md
-```
-
-**Generate AI-powered documentation from code (OpenAI):**
-```bash
-bin/gendoc.js --input ./src --output ./docs/ai-code-doc.md --ai --ai-provider openai --openai-key $OPENAI_API_KEY
-```
-
-**Generate AI-powered documentation from code (Anthropic Claude):**
-```bash
-bin/gendoc.js --input ./src --output ./docs/ai-claude-doc.md --ai --ai-provider anthropic --anthropic-key $ANTHROPIC_API_KEY
-```
-
-**Generate AI-powered documentation from code (Google Gemini):**
-```bash
-bin/gendoc.js --input ./src --output ./docs/ai-gemini-doc.md --ai --ai-provider gemini --gemini-key $GEMINI_API_KEY
-```
-
-**Generate AI-powered documentation from code (Cohere):**
-```bash
-bin/gendoc.js --input ./src --output ./docs/ai-cohere-doc.md --ai --ai-provider cohere --cohere-key $COHERE_API_KEY
-```
-
-**Generate AI-powered documentation from code (Azure OpenAI):**
-```bash
-bin/gendoc.js --input ./src --output ./docs/ai-azure-doc.md --ai --ai-provider azure-openai --azure-openai-key $AZURE_OPENAI_KEY --azure-openai-endpoint "https://<resource>.openai.azure.com/openai/deployments/<deployment>/chat/completions?api-version=2024-02-15-preview"
-```
-
----
-
-## Overview
-
-This tool is a generic, extensible documentation generator that communicates via the Model Context Protocol (MCP, stdio). It supports various input formats (e.g., rulebases, API definitions, configuration objects) and generates structured Markdown or JSON documentation.  
-The architecture is designed for extensibility, robustness, and automation.
-
----
-
-## Features
-
-- **Node.js MCP server** (communication via stdio, JSON commands)
-- **Global configuration (`config`)**
-  - Programming languages for code examples/snippets (`languages`)
-  - Default output style (`outputStyle`)
-  - Default language (`defaultLang`)
-  - Feature toggles (`features`)
-  - Can be provided globally or per command
-- **Command: `generateDocsFromInput`**
-  - Automatic detection and normalization of input formats (`entries`, `rules`, `api`, `config`)
-  - Grouping by categories, clear section headings
-  - Error checking and marking of invalid entries
-  - Customizable output style (heading levels, bullet points)
-  - Multilingual support (English/German)
-  - Output as Markdown (default) or structured JSON documentation
-  - Outputs supported programming languages and code blocks if desired
-- **Command: `validateDocumentation`**
-  - Validates entries for required fields (`title`, `content`)
-  - Returns issues with index, error reason, and entry
-  - Multilingual output (en/de)
-- **Command: `generateDocsFromDiff`**
-  - Generates a documentation diff (Added/Changed/Removed) between two states (e.g., feature branch vs. main)
-  - Supports all formats like `generateDocsFromInput`
-  - Output as Markdown (changelog style) or JSON
-- **Automated tests** (Jest, ESM-ready)
-- **Extensible** for more commands, formats, languages, output styles
-
----
-
-## Project Structure
-
-```
-index.js                # MCP server entry point, command registry, stdio handling
-lib/generateDocs.js     # Core logic for documentation generation & validation
-lib/utils.js            # Helper functions (format detection, normalization)
-test/                   # Unit tests (Jest, ESM)
-```
-
----
-
-## Usage
-
-### 1. Installation & Start
-
-```bash
-npm install
-npm start
-```
-
-### 2. Communication (MCP server)
-
-The server expects JSON commands via stdin and responds via stdout.  
-Example command (as a single line):
-
-```json
-{
-  "config": {
-    "languages": ["python", "typescript"],
-    "defaultLang": "en",
-    "outputStyle": { "headingLevel": 3, "bullet": "*" },
-    "features": { "validate": true }
-  },
-  "command": "generateDocsFromInput",
-  "args": {
-    "input": { ... }
-  }
-}
-```
-- The config can also be provided directly in `args` (it will be merged).
-- All commands respect the config.
-
-### 3. Supported Input Formats
-
-- **entries**:  
-  ```json
-  { "entries": [ { "category": "API", "title": "getUser", "content": "Returns a user.", "code": { "python": "def get_user(): ...", "typescript": "function getUser() {}" } } ] }
-  ```
-- **rules**:  
-  ```json
-  { "rules": [ { "id": "R1", "name": "Rule 1", "description": "Desc" } ] }
-  ```
-- **api**:  
-  ```json
-  { "api": [ { "group": "User", "name": "getUser", "description": "Returns a user." } ] }
-  ```
-- **config**:  
-  ```json
-  { "config": [ { "section": "General", "key": "timeout", "value": 30 } ] }
-  ```
-
-### 4. Output Options
-
-- **Markdown** (default):  
-  Grouped by categories, customizable heading levels and bullet points.
-  - If `languages` is set and entries contain code examples, these will be output as code blocks.
-- **JSON**:  
-  Structured output, grouped by categories.
-
-### 5. Validation
-
-```json
-{
-  "command": "validateDocumentation",
-  "args": {
-    "input": { ... },
-    "lang": "en"
-  }
-}
-```
-Response:
-```json
-{
-  "result": {
-    "valid": false,
-    "issues": [
-      { "index": 0, "error": "Missing content", "entry": { "title": "T1" } }
-    ],
-    "message": "Some entries are invalid."
-  }
-}
-```
-
-### 6. Documentation Diff
-
-**Command:** `generateDocsFromDiff`
-
-- **Purpose:** Generates documentation of changes between two states (e.g., feature branch vs. main)
-- **Input:**
-  ```json
-  {
-    "command": "generateDocsFromDiff",
-    "args": {
-      "old": { ... },   // e.g., main/integration
-      "new": { ... },   // e.g., feature branch
-      "outputFormat": "markdown", // optional
-      "lang": "en" // optional
-    }
-  }
-  ```
-- **Output:**
-  - Markdown with sections "Added", "Changed", "Removed"
-  - Or structured JSON output:
-    ```json
-    {
-      "result": {
-        "diff": {
-          "added": [ ... ],
-          "changed": [ { "before": {...}, "after": {...} } ],
-          "removed": [ ... ]
-        }
-      }
-    }
-    ```
-- **Example Markdown Output:**
-  ```markdown
-  # Documentation Diff
-
-  ## Added
-  - getUser: Returns a user.
-
-  ## Changed
-  - setUser:
-    - Before: Old description
-    - After: New description
-
-  ## Removed
-  - deleteUser: Deletes a user.
-  ```
-
 ---
 
 ## Global Configuration (`config`)
 
-The central config can be provided at the top level or per command/args. It is automatically merged.
+You can provide a global config at the top level or per command/args. It is automatically merged.
 
 **Supported fields:**
-- `languages`: List of supported programming languages (e.g., for code examples)
-- `outputStyle`: Default output style (e.g., heading levels, bullet points)
+- `languages`: List of supported programming languages (for code examples)
+- `outputStyle`: Default output style (heading levels, bullet points)
 - `defaultLang`: Default language ("de" or "en")
 - `features`: Feature toggles (e.g., `{ "validate": true }`)
 
@@ -366,55 +164,48 @@ The central config can be provided at the top level or per command/args. It is a
 }
 ```
 
-**Result (Markdown):**
-```
-# Documentation
+---
 
-Supported languages: python, typescript
+## Commands
 
-## API
+### `generateDocsFromInput`
+- Detects and normalizes input formats (`entries`, `rules`, `api`, `config`)
+- Groups by categories, clear section headings
+- Error checking and marking of invalid entries
+- Customizable output style
+- Multilingual support (English/German)
+- Output as Markdown (default) or JSON
 
-### getUser
+### `validateDocumentation`
+- Validates entries for required fields (`title`, `content`)
+- Returns issues with index, error reason, and entry
+- Multilingual output (en/de)
 
-Returns a user.
-
-```python
-def get_user(): ...
-```
-
-```typescript
-function getUser() {}
-```
-```
+### `generateDocsFromDiff`
+- Generates a documentation diff (Added/Changed/Removed) between two states (e.g., feature branch vs. main)
+- Output as Markdown (changelog style) or JSON
 
 ---
 
 ## Extensibility
 
-### Support new input formats
+- **Support new input formats**: Extend `detectFormat` and `normalizeEntries` in `lib/utils.js`.
+- **More output styles**: Adjust Markdown generation in `generateDocsFromInput`.
+- **Multilingual support**: Add more languages by extending text blocks in `generateDocsFromInput` and `validateDocumentation`.
+- **New commands**: Import a new function in `index.js` and register it in the `commands` object.
+- **Extend tests**: Add new `.test.mjs` files in the `test/` folder.
 
-- Extend the `detectFormat` and `normalizeEntries` functions in `lib/utils.js`.
-- Example: For a new field `myFormat`, simply add a new case.
+---
 
-### More output styles
+## Testing
 
-- Adjust Markdown generation in `generateDocsFromInput`.
-- Additional options (e.g., tables, code blocks, links) can be controlled via the `outputStyle` argument.
+Run all tests:
+```bash
+npm test
+```
 
-### Multilingual support
-
-- All output and error messages are already prepared for English/German.
-- Add more languages by extending the text blocks in `generateDocsFromInput` and `validateDocumentation`.
-
-### New commands
-
-- Simply import a new function in `index.js` and register it in the `commands` object.
-- Example: `coverageCheck`, `exportToHtml`, `summarizeDocs`, etc.
-
-### Extend tests
-
-- Add new `.test.mjs` files in the `test/` folder.
-- Use existing tests as templates.
+- Automated tests (Jest, ESM-ready) cover all core logic and CLI integration.
+- Extend tests by adding new `.test.mjs` files in the `test/` folder.
 
 ---
 
@@ -427,7 +218,7 @@ function getUser() {}
 
 ---
 
-## Useful, not yet implemented features
+## Roadmap / Not Yet Implemented
 
 - **Coverage check:** Check if all expected categories/entries are covered.
 - **Format validation:** E.g., check for specific fields in API definitions.
@@ -438,4 +229,21 @@ function getUser() {}
 
 ---
 
-**Questions, requests, or suggestions? Just describe the command or feature – the system is designed for quick adaptation!** 
+## Project Structure
+
+```
+index.js                # MCP server entry point, command registry, stdio handling
+lib/generateDocs.js     # Core logic for documentation generation & validation
+lib/utils.js            # Helper functions (format detection, normalization)
+test/                   # Unit tests (Jest, ESM)
+```
+
+---
+
+## Contributing, License, and Contact
+
+- **License:** MIT (see LICENSE)
+- **Contributing:** See CONTRIBUTING.md
+- **Code of Conduct:** See CODE_OF_CONDUCT.md
+- **Changelog:** See CHANGELOG.md
+- **Questions, requests, or suggestions?** Just describe the command or feature – the system is designed for quick adaptation! 
