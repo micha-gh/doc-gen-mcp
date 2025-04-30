@@ -8,18 +8,18 @@ import { generateDocsFromInput } from '../lib/generateDocs.js';
 import https from 'https';
 
 function printUsage() {
-  console.log(`Usage: gendoc.js --input <file|dir> [--output <file>] [--config <file>] [--ai --ai-provider <provider> --<provider>-key <key> ...]`);
-  console.log(`  --input           Path to JSON/config file or code file/directory (.js/.ts)`);
-  console.log(`  --output          Output Markdown file (default: stdout)`);
-  console.log(`  --config          Optional config JSON file`);
-  console.log(`  --ai              Use AI to generate documentation from code (optional)`);
-  console.log(`  --ai-provider     AI provider: openai | anthropic | gemini | cohere | azure-openai`);
-  console.log(`  --openai-key      OpenAI API key (for --ai-provider openai)`);
-  console.log(`  --anthropic-key   Anthropic API key (for --ai-provider anthropic)`);
-  console.log(`  --gemini-key      Google Gemini API key (for --ai-provider gemini)`);
-  console.log(`  --cohere-key      Cohere API key (for --ai-provider cohere)`);
-  console.log(`  --azure-openai-key Azure OpenAI API key (for --ai-provider azure-openai)`);
-  console.log(`  --azure-openai-endpoint Azure OpenAI endpoint (for --ai-provider azure-openai)`);
+  console.error(`Usage: gendoc.js --input <file|dir> [--output <file>] [--config <file>] [--ai --ai-provider <provider> --<provider>-key <key> ...]`);
+  console.error(`  --input           Path to JSON/config file or code file/directory (.js/.ts)`);
+  console.error(`  --output          Output Markdown file (default: stdout)`);
+  console.error(`  --config          Optional config JSON file`);
+  console.error(`  --ai              Use AI to generate documentation from code (optional)`);
+  console.error(`  --ai-provider     AI provider: openai | anthropic | gemini | cohere | azure-openai`);
+  console.error(`  --openai-key      OpenAI API key (for --ai-provider openai)`);
+  console.error(`  --anthropic-key   Anthropic API key (for --ai-provider anthropic)`);
+  console.error(`  --gemini-key      Google Gemini API key (for --ai-provider gemini)`);
+  console.error(`  --cohere-key      Cohere API key (for --ai-provider cohere)`);
+  console.error(`  --azure-openai-key Azure OpenAI API key (for --ai-provider azure-openai)`);
+  console.error(`  --azure-openai-endpoint Azure OpenAI endpoint (for --ai-provider azure-openai)`);
 }
 
 function parseArgs() {
@@ -47,9 +47,9 @@ function isCodeFile(file) {
 }
 
 function extractJSDocEntriesFromCode(code, filename) {
-  // Simple regex to extract /** ... */ comments with @param/@returns/@description
+  // Improved regex to extract /** ... */ comments and the next function/class/const/let/var name
   const entries = [];
-  const regex = /\/\*\*([\s\S]*?)\*\/(?:\s*export\s+)?(?:function|class|const|let|var)?\s*([a-zA-Z0-9_]+)/g;
+  const regex = /\/\*\*([\s\S]*?)\*\/\s*(?:export\s+)?(?:async\s+)?(?:function|class|const|let|var)\s+([a-zA-Z0-9_]+)/g;
   let match;
   while ((match = regex.exec(code))) {
     const comment = match[1];
