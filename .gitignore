@@ -11,4 +11,5 @@ dist/
 *.log
 .idea/
 .vscode/
-*.swp 
+*.swp
+.blog/ 
