@@ -27,6 +27,8 @@ doc-gen-mcp is a generic, extensible documentation generator for codebases, APIs
 - **Extensible**: Add new formats, commands, output styles
 - **Automated tests**: Jest, ESM-ready
 - **Confluence export**: Publish documentation directly to Confluence pages via REST API
+- **Maintenance plan**: Structured plan for short-, mid-, and long-term improvements and migration to TypeScript
+- **Cursor integration**: Comprehensive Cursor rules and commands for improved development workflow
 
 ---
 
@@ -290,6 +292,12 @@ config/                     # Configuration files
 docs/                       # Documentation
   confluence-integration.md # Confluence integration guide
 test/                       # Unit tests (Jest, ESM)
+.cursor/                    # Cursor IDE integration
+  cursorrules.json          # Cursor rules and commands for improved development
+  README.md                 # Documentation for Cursor rules
+maintenance-plan.md         # Comprehensive maintenance plan with timelines
+cursor-rules.md             # Documentation for available Cursor commands
+doc-gen-mcp-rules.json      # Importable Cursor commands in JSON format
 ```
 
 ---

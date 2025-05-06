@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Comprehensive maintenance plan with short-, mid-, and long-term measures
+- Enhanced Cursor Rules with JavaScript to TypeScript migration support
+- New Cursor commands for documentation generation and code maintenance
+- Wartungsplan category added to Cursor rules
+- Generation of maintenance reports and TypeScript skeleton files
 - Tests for exporters (HTML, Markdown, BaseExporter, ExporterManager)
 - HTML exporter using the plugin architecture
   - Customizable templates and CSS styling
@@ -44,6 +49,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for global CLI command via npm installation
 
 ### Changed
+- Updated Cursor rules to version 1.1.0 with improved documentation and migration support
 - Updated documentation to reflect new export formats and features
 - Improved README with clearer installation and usage instructions
 
