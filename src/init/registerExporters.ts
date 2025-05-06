@@ -7,6 +7,7 @@
 
 import { exporterManager } from '../core/plugins/ExporterManager.js';
 import ConfluenceExporter from '../exporters/confluenceExporter.js';
+import MarkdownExporter from '../exporters/markdownExporter.js';
 
 /**
  * Initializes and registers all built-in exporters
@@ -14,6 +15,7 @@ import ConfluenceExporter from '../exporters/confluenceExporter.js';
 export async function registerBuiltinExporters(): Promise<void> {
   // Register built-in exporters
   exporterManager.registerExporter('confluence', () => new ConfluenceExporter());
+  exporterManager.registerExporter('markdown', () => new MarkdownExporter());
   
   console.log('Registered built-in exporters');
 }

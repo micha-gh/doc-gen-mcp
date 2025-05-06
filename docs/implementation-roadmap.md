@@ -11,6 +11,13 @@ This document outlines the planned implementation steps for the features describ
 - ✅ CLI support with `--export-format` flag
 - ✅ Documentation for creating custom exporters
 
+### 📝 Markdown Exporter Plugin
+- ✅ Basic Markdown generation from document entries
+- ✅ Support for different Markdown flavors (GitHub, CommonMark)
+- ✅ Table of contents generation
+- ✅ Configurable heading levels and styling
+- ✅ File output capabilities
+
 ## 🚀 Upcoming Features (Prioritized)
 
 ### 1️⃣ Enhanced Documentation Validator (Phase 1)
@@ -21,10 +28,7 @@ This document outlines the planned implementation steps for the features describ
 - [ ] Integration with `cursorrules.json`
 
 ### 2️⃣ Additional Exporter Plugins (Phase 1)
-- [ ] Markdown exporter
-  - [ ] Support for different Markdown flavors (GitHub, CommonMark)
-  - [ ] Template-based generation
-  - [ ] Table of contents generation
+- [✅] Markdown exporter
 - [ ] HTML exporter
   - [ ] Customizable templates
   - [ ] CSS styling options
@@ -78,12 +82,12 @@ The enhanced validator will extend the current validation system to include:
 - Multi-level validation (structure, content, quality)
 - HTML and JSON report generation
 
-### Markdown Exporter
+### HTML Exporter
 A new exporter plugin that will:
-- Support multiple Markdown formats
-- Implement template-based generation
-- Include options for customizing output style
-- Generate table of contents and navigation elements
+- Support customizable templates
+- Implement CSS styling options
+- Include interactive features like collapsible sections and search
+- Generate navigation and index pages
 
 ### Semantic Diff / Change Detector
 This feature will:

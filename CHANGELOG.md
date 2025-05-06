@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Markdown exporter using the plugin architecture
+  - Support for different Markdown flavors
+  - Table of contents generation
+  - Configurable heading levels and styling
+  - File output capabilities
 - Plugin architecture for exporters with BaseExporter abstract class and ExporterManager
 - Modular export system supporting multiple export targets through plugins
 - Refactored Confluence exporter to use the new plugin architecture
@@ -21,6 +26,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Comprehensive documentation in `docs/confluence-integration.md`
 
 ### Fixed
+- Fixed compatibility issues in Confluence exporter with new plugin architecture
+- Fixed TypeScript type errors in exporter implementations
 - Fixed TypeScript compilation issues with module resolution
 - Fixed compatibility issues with marked v4.3.0
 - Added custom type definitions for third-party libraries

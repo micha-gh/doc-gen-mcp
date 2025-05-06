@@ -1,0 +1,10 @@
+{
+  "flavor": "github",
+  "headingLevel": 2,
+  "bulletChar": "-",
+  "tableOfContents": true,
+  "codeBlocks": {
+    "addLanguage": true,
+    "defaultLanguage": "typescript"
+  }
+} 
