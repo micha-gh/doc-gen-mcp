@@ -1,0 +1,28 @@
+# Doc-gen-mcp specific ignore patterns
+# Similar to .gitignore but just for documentation generation
+
+# Test files
+test/
+*.test.js
+*.test.ts
+*.test.mjs
+*.spec.js
+*.spec.ts
+
+# Build artifacts
+dist/
+build/
+coverage/
+
+# Config files
+tsconfig.json
+jest.config.js
+.eslintrc
+.prettierrc
+
+# Documentation about the tool itself
+docs/confluence-integration.md
+integration-plan.md
+
+# MCP internal files
+.blog/ 

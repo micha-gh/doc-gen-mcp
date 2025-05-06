@@ -20,6 +20,13 @@ function printUsage() {
   console.error(`  --cohere-key      Cohere API key (for --ai-provider cohere)`);
   console.error(`  --azure-openai-key Azure OpenAI API key (for --ai-provider azure-openai)`);
   console.error(`  --azure-openai-endpoint Azure OpenAI endpoint (for --ai-provider azure-openai)`);
+  console.error(``);
+  console.error(`Confluence Export Options:`);
+  console.error(`  --confluence      Export to Confluence`);
+  console.error(`  --confluence-config Path to Confluence config file (default: config/confluence.json)`);
+  console.error(`  --by-category     Export separate Confluence pages by category`);
+  console.error(`  --page-title      For Confluence: use a single page with this title`);
+  console.error(`  --labels          Comma-separated list of labels for Confluence pages`);
 }
 
 function parseArgs() {
@@ -37,6 +44,11 @@ function parseArgs() {
     else if (args[i] === '--cohere-key') opts.cohereKey = args[++i];
     else if (args[i] === '--azure-openai-key') opts.azureOpenaiKey = args[++i];
     else if (args[i] === '--azure-openai-endpoint') opts.azureOpenaiEndpoint = args[++i];
+    else if (args[i] === '--confluence') opts.confluence = true;
+    else if (args[i] === '--confluence-config') opts.confluenceConfig = args[++i];
+    else if (args[i] === '--by-category') opts.byCategory = true;
+    else if (args[i] === '--page-title') opts.pageTitle = args[++i];
+    else if (args[i] === '--labels') opts.labels = args[++i].split(',');
     else if (args[i] === '--help' || args[i] === '-h') opts.help = true;
   }
   return opts;
@@ -230,65 +242,171 @@ async function extractAIEntriesFromCodeFiles(files, dir, aiOpts) {
   return entries;
 }
 
+/**
+ * Helper function to get AI options from CLI arguments
+ */
+function getAIOptions(opts) {
+  if (!opts.aiProvider) {
+    throw new Error('--ai-provider is required when using --ai flag');
+  }
+
+  const provider = opts.aiProvider;
+  const keyParam = `${provider.replace(/-/g, '')}Key`;
+  
+  if (!opts[keyParam] && provider !== 'azure-openai') {
+    throw new Error(`--${keyParam} is required for AI provider ${provider}`);
+  }
+
+  if (provider === 'azure-openai' && (!opts.azureOpenaiKey || !opts.azureOpenaiEndpoint)) {
+    throw new Error('--azure-openai-key and --azure-openai-endpoint are required for azure-openai provider');
+  }
+  
+  return {
+    aiProvider: provider,
+    openaiKey: opts.openaiKey,
+    anthropicKey: opts.anthropicKey,
+    geminiKey: opts.geminiKey,
+    cohereKey: opts.cohereKey,
+    azureOpenaiKey: opts.azureOpenaiKey,
+    azureOpenaiEndpoint: opts.azureOpenaiEndpoint
+  };
+}
+
 async function main() {
   const opts = parseArgs();
-  if (opts.help || !opts.input) {
+  
+  if (opts.help) {
     printUsage();
     process.exit(0);
   }
-
-  let config = {};
-  if (opts.config) {
-    try {
-      config = JSON.parse(fs.readFileSync(opts.config, 'utf-8'));
-    } catch (e) {
-      console.error('Could not read config:', e.message);
-      process.exit(1);
-    }
-  }
-
-  let inputData;
-  let isCode = false;
-  const stat = fs.statSync(opts.input);
-  if (stat.isFile() && (opts.input.endsWith('.json') || opts.input.endsWith('.config'))) {
-    // JSON/config input
-    inputData = JSON.parse(fs.readFileSync(opts.input, 'utf-8'));
-  } else if (stat.isFile() && isCodeFile(opts.input)) {
-    // Single code file
-    if (opts.ai && opts.aiProvider && opts[`${opts.aiProvider.replace(/-/g, '')}Key`]) {
-      const code = fs.readFileSync(opts.input, 'utf-8');
-      const doc = await aiDocForCode(code, opts);
-      inputData = { entries: [{ category: 'Code', title: path.basename(opts.input), content: doc }] };
-    } else {
-      const code = fs.readFileSync(opts.input, 'utf-8');
-      inputData = { entries: extractJSDocEntriesFromCode(code, path.basename(opts.input)) };
-    }
-    isCode = true;
-  } else if (stat.isDirectory()) {
-    // Directory: collect all .js/.ts files
-    const files = fs.readdirSync(opts.input).filter(f => isCodeFile(f));
-    if (opts.ai && opts.aiProvider && opts[`${opts.aiProvider.replace(/-/g, '')}Key`]) {
-      inputData = { entries: await extractAIEntriesFromCodeFiles(files, opts.input, opts) };
-    } else {
-      let entries = [];
-      for (const file of files) {
-        const code = fs.readFileSync(path.join(opts.input, file), 'utf-8');
-        entries = entries.concat(extractJSDocEntriesFromCode(code, file));
-      }
-      inputData = { entries };
-    }
-    isCode = true;
-  } else {
-    console.error('Unsupported input type. Must be a JSON/config file or a code file/directory.');
+  
+  if (!opts.input) {
+    console.error('Error: Missing --input parameter');
+    printUsage();
     process.exit(1);
   }
-
-  const result = await generateDocsFromInput({ input: inputData, ...config });
-  if (opts.output) {
-    fs.writeFileSync(opts.output, result.markdown);
-    console.log(`Documentation written to ${opts.output}`);
-  } else {
-    process.stdout.write(result.markdown);
+  
+  let inputData;
+  try {
+    // Check if input is a file or directory
+    const inputStat = fs.statSync(opts.input);
+    
+    if (inputStat.isDirectory()) {
+      // Process directory
+      const files = fs.readdirSync(opts.input)
+        .filter(file => isCodeFile(file))
+        .map(file => path.join(opts.input, file));
+      
+      if (opts.ai) {
+        // AI-powered documentation from code files
+        const aiOpts = getAIOptions(opts);
+        inputData = { entries: await extractAIEntriesFromCodeFiles(files, opts.input, aiOpts) };
+      } else {
+        // Standard JSDoc extraction
+        inputData = { entries: [] };
+        for (const file of files) {
+          const code = fs.readFileSync(file, 'utf8');
+          const filename = path.basename(file);
+          inputData.entries.push(...extractJSDocEntriesFromCode(code, filename));
+        }
+      }
+    } else {
+      // Process single file
+      const ext = path.extname(opts.input).toLowerCase();
+      
+      if (ext === '.json') {
+        // Load JSON input file
+        const jsonContent = fs.readFileSync(opts.input, 'utf8');
+        inputData = JSON.parse(jsonContent);
+      } else if (isCodeFile(opts.input)) {
+        // Extract from code file
+        const code = fs.readFileSync(opts.input, 'utf8');
+        const filename = path.basename(opts.input);
+        
+        if (opts.ai) {
+          // AI-powered documentation
+          const aiOpts = getAIOptions(opts);
+          const aiDoc = await aiDocForCode(code, aiOpts);
+          inputData = {
+            entries: [{
+              category: 'Code',
+              title: filename,
+              content: aiDoc
+            }]
+          };
+        } else {
+          // Standard JSDoc extraction
+          inputData = {
+            entries: extractJSDocEntriesFromCode(code, filename)
+          };
+        }
+      } else {
+        throw new Error(`Unsupported file type: ${ext}. Expected .json, .js, or .ts file.`);
+      }
+    }
+    
+    // Get config if specified
+    let config = {};
+    if (opts.config) {
+      const configContent = fs.readFileSync(opts.config, 'utf8');
+      config = JSON.parse(configContent);
+    }
+    
+    if (opts.confluence) {
+      // Export to Confluence
+      const { exportToConfluence } = await import('../lib/confluenceCommand.js');
+      
+      console.log('Exporting documentation to Confluence...');
+      
+      const result = await exportToConfluence({
+        input: inputData,
+        configPath: opts.confluenceConfig,
+        title: opts.pageTitle,
+        byCategory: opts.byCategory,
+        labels: opts.labels
+      });
+      
+      if (result.success) {
+        console.log('Successfully exported to Confluence:');
+        for (const page of result.pages) {
+          if (page.status === 'success') {
+            console.log(`- ${page.title}: Success (ID: ${page.id})`);
+          } else {
+            console.error(`- ${page.title}: Error - ${page.error}`);
+          }
+        }
+      } else {
+        console.error(`Error: ${result.error}`);
+        if (result.validation) {
+          console.error('Validation issues:');
+          for (const issue of result.validation.issues) {
+            console.error(`- ${issue.error}: ${JSON.stringify(issue.entry)}`);
+          }
+        }
+        process.exit(1);
+      }
+    } else {
+      // Generate docs with generateDocsFromInput
+      const { generateDocsFromInput } = await import('../lib/generateDocs.js');
+      
+      const result = await generateDocsFromInput({
+        input: inputData,
+        outputFormat: 'markdown',
+        config
+      });
+      
+      if (opts.output) {
+        // Write to file
+        fs.writeFileSync(opts.output, result.markdown);
+        console.log(`Documentation written to ${opts.output}`);
+      } else {
+        // Write to stdout
+        console.log(result.markdown);
+      }
+    }
+  } catch (err) {
+    console.error(`Error: ${err.message}`);
+    process.exit(1);
   }
 }
 

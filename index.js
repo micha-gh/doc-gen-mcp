@@ -1,5 +1,6 @@
 // MCP-Server Einstiegspunkt
 import { generateDocsFromInput, validateDocumentation, generateDocsFromDiff } from './lib/generateDocs.js';
+import { exportToConfluence } from './lib/confluenceCommand.js';
 import readline from 'readline';
 
 // Command-Registry
@@ -7,6 +8,7 @@ const commands = {
   generateDocsFromInput,
   validateDocumentation,
   generateDocsFromDiff,
+  exportToConfluence,
   // Weitere Commands können hier später ergänzt werden
 };
 

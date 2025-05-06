@@ -25,6 +25,7 @@ doc-gen-mcp is a generic, extensible documentation generator for codebases, APIs
 - **Multilingual**: English/German, easily extensible
 - **Extensible**: Add new formats, commands, output styles
 - **Automated tests**: Jest, ESM-ready
+- **Confluence export**: Publish documentation directly to Confluence pages via REST API
 
 ---
 
@@ -62,6 +63,10 @@ bin/gendoc.js --input <file|dir> [--output <file>] [--config <file>] [--ai --ai-
   ```bash
   bin/gendoc.js --input ./src --output ./docs/ai-code-doc.md --ai --ai-provider openai --openai-key $OPENAI_API_KEY
   ```
+- Export to Confluence:
+  ```bash
+  bin/gendoc.js --input ./src --confluence --page-title "API Documentation" --labels api,docs
+  ```
 
 ---
 
@@ -91,6 +96,7 @@ bin/gendoc.js --input <file|dir> [--output <file>] [--config <file>] [--ai --ai-
 
 - **Markdown** (default): Grouped by categories, customizable heading levels and bullet points.
 - **JSON**: Structured output, grouped by categories.
+- **Confluence**: Export directly to Confluence pages (single page, by category, or individual pages).
 
 ---
 
@@ -123,6 +129,45 @@ You can use the CLI with AI support directly from within the Cursor editor by de
   "description": "Generate AI documentation for the current file"
 }
 ```
+
+---
+
+## Confluence Integration
+
+Export documentation directly to Confluence pages:
+
+### CLI Usage
+
+```bash
+bin/gendoc.js --input ./src --confluence [--confluence-config <path>] [--page-title <title>] [--by-category] [--labels <labels>]
+```
+
+### Options
+
+- `--confluence`: Enable Confluence export
+- `--confluence-config`: Path to a custom Confluence configuration file (default: `config/confluence.json`)
+- `--page-title`: Export all content to a single page with this title
+- `--by-category`: Create separate pages by category
+- `--labels`: Comma-separated list of labels to add to pages
+
+### Configuration
+
+Create a configuration file at `config/confluence.json`:
+
+```json
+{
+  "baseUrl": "https://your-space.atlassian.net/wiki",
+  "spaceKey": "DOC",
+  "parentPageId": "123456789",
+  "auth": {
+    "method": "token",
+    "token": "$CONFLUENCE_TOKEN"
+  },
+  "defaultLabels": ["auto-doc", "mcp"]
+}
+```
+
+For more details, see the [Confluence Integration Documentation](docs/confluence-integration.md).
 
 ---
 
@@ -185,6 +230,12 @@ You can provide a global config at the top level or per command/args. It is auto
 - Generates a documentation diff (Added/Changed/Removed) between two states (e.g., feature branch vs. main)
 - Output as Markdown (changelog style) or JSON
 
+### `exportToConfluence`
+- Exports documentation to Confluence pages via REST API
+- Supports multiple export strategies (single page, by category, individual pages)
+- Converts Markdown to Confluence-compatible HTML
+- Handles authentication and page creation/update
+
 ---
 
 ## Extensibility
@@ -232,10 +283,18 @@ npm test
 ## Project Structure
 
 ```
-index.js                # MCP server entry point, command registry, stdio handling
-lib/generateDocs.js     # Core logic for documentation generation & validation
-lib/utils.js            # Helper functions (format detection, normalization)
-test/                   # Unit tests (Jest, ESM)
+index.js                    # MCP server entry point, command registry, stdio handling
+lib/generateDocs.js         # Core logic for documentation generation & validation
+lib/utils.js                # Helper functions (format detection, normalization)
+lib/confluenceCommand.js    # Confluence export command implementation
+src/exporters/              # TypeScript modules for exporting to different formats
+  confluenceExporter.ts     # Confluence API client and export functions
+  markdownConverter.ts      # Markdown to Confluence HTML converter
+config/                     # Configuration files
+  confluence.json           # Confluence connection settings
+docs/                       # Documentation
+  confluence-integration.md # Confluence integration guide
+test/                       # Unit tests (Jest, ESM)
 ```
 
 ---

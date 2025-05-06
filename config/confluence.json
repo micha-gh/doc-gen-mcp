@@ -1,0 +1,10 @@
+{
+  "baseUrl": "https://your-space.atlassian.net/wiki",
+  "spaceKey": "DOC",
+  "parentPageId": "123456789",
+  "auth": {
+    "method": "token",
+    "token": "$CONFLUENCE_TOKEN"
+  },
+  "defaultLabels": ["auto-doc", "mcp"]
+} 

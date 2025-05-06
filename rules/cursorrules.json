@@ -1,0 +1,34 @@
+{
+  "rules": [
+    {
+      "id": "R1",
+      "name": "Documentation Structure",
+      "description": "All documentation should follow a clear structure with a title, description, and examples.",
+      "category": "Documentation"
+    },
+    {
+      "id": "R2",
+      "name": "API Documentation",
+      "description": "All API endpoints must have documentation that includes parameters, return values, and error codes.",
+      "category": "Documentation"
+    },
+    {
+      "id": "R3",
+      "name": "Code Comments",
+      "description": "All functions and methods should have JSDoc or similar comments explaining their purpose, parameters, and return values.",
+      "category": "Code Quality"
+    },
+    {
+      "id": "R4",
+      "name": "Markdown Files",
+      "description": "Each component or module should have an accompanying .md file with usage examples.",
+      "category": "Documentation"
+    },
+    {
+      "id": "R5",
+      "name": "Confluence Export",
+      "description": "All documentation should be exportable to Confluence for team visibility.",
+      "category": "Team Collaboration"
+    }
+  ]
+} 
