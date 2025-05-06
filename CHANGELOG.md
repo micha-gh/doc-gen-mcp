@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Tests for exporters (HTML, Markdown, BaseExporter, ExporterManager)
 - HTML exporter using the plugin architecture
   - Customizable templates and CSS styling
   - Interactive features including collapsible sections and search

@@ -42,6 +42,7 @@ This document outlines the planned implementation steps for the features describ
 - [ ] Integration with CI/CD workflows
 
 ### 4️⃣ Snapshot Tests for Documentation (Phase 2)
+- [✅] Tests for exporters (HTML, Markdown, ExporterManager)
 - [ ] Documentation snapshot creation
 - [ ] Comparison logic for detecting changes
 - [ ] Test framework integration (Jest)
