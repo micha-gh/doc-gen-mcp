@@ -5,9 +5,16 @@
  * Add new exporters to this file to make them available in the application.
  */
 
-import { exporterManager } from '../core/plugins/ExporterManager.js';
+import { ExporterManager } from '../core/plugins/ExporterManager.js';
 import ConfluenceExporter from '../exporters/confluenceExporter.js';
 import MarkdownExporter from '../exporters/markdownExporter.js';
+import HTMLExporter from '../exporters/htmlExporter.js';
+import PDFExporter from '../exporters/pdfExporter.js';
+
+/**
+ * The central ExporterManager for the application
+ */
+export const exporterManager = new ExporterManager();
 
 /**
  * Initializes and registers all built-in exporters
@@ -16,6 +23,8 @@ export async function registerBuiltinExporters(): Promise<void> {
   // Register built-in exporters
   exporterManager.registerExporter('confluence', () => new ConfluenceExporter());
   exporterManager.registerExporter('markdown', () => new MarkdownExporter());
+  exporterManager.registerExporter('html', () => new HTMLExporter());
+  exporterManager.registerExporter('pdf', () => new PDFExporter());
   
   console.log('Registered built-in exporters');
 }
