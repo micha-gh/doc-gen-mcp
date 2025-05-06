@@ -1,0 +1,102 @@
+[
+  {
+    "name": "Generate AI Documentation (OpenAI)",
+    "command": "bin/gendoc.js --input ${fileDirname} --output ./docs/ai-doc-${fileBasenameNoExt}.md --ai --ai-provider openai --openai-key $OPENAI_API_KEY",
+    "description": "Generiere Dokumentation für den aktuellen Ordner mit OpenAI"
+  },
+  {
+    "name": "Generate AI Documentation (Claude)",
+    "command": "bin/gendoc.js --input ${fileDirname} --output ./docs/ai-doc-${fileBasenameNoExt}.md --ai --ai-provider anthropic --anthropic-key $ANTHROPIC_API_KEY",
+    "description": "Generiere Dokumentation für den aktuellen Ordner mit Anthropic Claude"
+  },
+  {
+    "name": "Generate Doc for Current File",
+    "command": "bin/gendoc.js --input ${file} --output ./docs/${fileBasenameNoExt}.md",
+    "description": "Generiere Dokumentation für die aktuelle Datei"
+  },
+  {
+    "name": "Export to Confluence",
+    "command": "bin/gendoc.js --input ${fileDirname} --confluence --page-title \"${fileBasenameNoExt} Dokumentation\"",
+    "description": "Exportiere Dokumentation nach Confluence"
+  },
+  {
+    "name": "Build TypeScript",
+    "command": "npm run build",
+    "description": "TypeScript kompilieren"
+  },
+  {
+    "name": "Run Tests",
+    "command": "npm test",
+    "description": "Alle Tests ausführen"
+  },
+  {
+    "name": "Update Dependencies",
+    "command": "npm outdated && echo 'Run: npm update' to update non-major versions",
+    "description": "Zeige veraltete Abhängigkeiten"
+  },
+  {
+    "name": "Lint Check",
+    "command": "npx eslint .",
+    "description": "Lint-Check für das gesamte Projekt"
+  },
+  {
+    "name": "Create Exporter Plugin",
+    "command": "mkdir -p src/exporters/${input:exporterName}Exporter && cp src/templates/exporter-template.ts src/exporters/${input:exporterName}Exporter.ts && code src/exporters/${input:exporterName}Exporter.ts",
+    "description": "Neues Exporter-Plugin erstellen"
+  },
+  {
+    "name": "Test Exporter Plugin",
+    "command": "npm run build && bin/gendoc.js --input test/samples/sample-entries.json --export-format ${input:exporterName}",
+    "description": "Exporter-Plugin testen"
+  },
+  {
+    "name": "Show Project Structure",
+    "command": "find . -type f -not -path \"./node_modules/*\" -not -path \"./dist/*\" | sort",
+    "description": "Zeige die Projektstruktur ohne node_modules und dist"
+  },
+  {
+    "name": "Project Health Check",
+    "command": "echo 'Checking dependencies...' && npm outdated && echo 'Running tests...' && npm test",
+    "description": "Führe einen Health-Check des Projekts durch"
+  },
+  {
+    "name": "Fix initializeExporters",
+    "command": "sed -i '' -e '/import initializeExporters/a\\initializeExporters();' bin/gendoc.js || echo 'Funktion bereits hinzugefügt oder nicht gefunden'",
+    "description": "Korrigiere die fehlende initializeExporters-Funktion in bin/gendoc.js"
+  },
+  {
+    "name": "Migrate JS to TS",
+    "command": "cp ${file} ${fileDirname}/${fileBasenameNoExt}.ts && code ${fileDirname}/${fileBasenameNoExt}.ts",
+    "description": "Migriere eine JavaScript-Datei zu TypeScript"
+  },
+  {
+    "name": "Migration Progress",
+    "command": "echo 'JS Files:' && find lib -name '*.js' | wc -l && echo 'TS Files:' && find src -name '*.ts' | wc -l",
+    "description": "Zeige den Fortschritt der JS zu TS Migration"
+  },
+  {
+    "name": "Initialize New Template",
+    "command": "cp -r src/templates/exporter-template src/exporters/${input:exporterName}Exporter",
+    "description": "Initialisiere einen neuen Exporter aus einem Template-Verzeichnis"
+  },
+  {
+    "name": "Generate HTML Documentation",
+    "command": "bin/gendoc.js --input ${fileDirname} --output ./docs/${fileBasenameNoExt}.html --export-format html",
+    "description": "Generiere HTML-Dokumentation für den aktuellen Ordner"
+  },
+  {
+    "name": "Generate PDF Documentation",
+    "command": "bin/gendoc.js --input ${fileDirname} --output ./docs/${fileBasenameNoExt}.pdf --export-format pdf",
+    "description": "Generiere PDF-Dokumentation für den aktuellen Ordner"
+  },
+  {
+    "name": "Test All Exporters",
+    "command": "for exporter in $(node -e \"console.log(require('./dist/core/plugins/ExporterManager.js').exporterManager.getAvailableExporters().join(' '))\"); do echo \"Testing $exporter exporter...\" && bin/gendoc.js --input test/samples/sample-entries.json --export-format $exporter --output ./test-output/$exporter-output; done",
+    "description": "Teste alle verfügbaren Exporter"
+  },
+  {
+    "name": "Find Missing JSDoc",
+    "command": "grep -r --include=\"*.ts\" -L \"/**\" src/ | grep -v \"index.ts\"",
+    "description": "Finde TypeScript-Dateien ohne JSDoc-Kommentare"
+  }
+] 

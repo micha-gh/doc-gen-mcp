@@ -12,6 +12,7 @@ The rules are defined in `cursorrules.json` and cover various aspects of the cod
 - **Testing**: Requirements for proper test coverage
 - **Project Management**: Rules for project maintenance
 - **Best Practices**: General best practices for the project
+- **Wartungsplan**: Rules related to the maintenance plan and JavaScript to TypeScript migration
 
 ## Documentation Update Rules
 
@@ -37,25 +38,38 @@ Additionally, a Git pre-commit hook has been set up to check if `CHANGELOG.md` a
 2. If so, verify that `README.md` and `CHANGELOG.md` are also being updated
 3. If not, warn the developer and ask if they want to proceed with the commit anyway
 
-## How to Update Documentation Files
+## JavaScript to TypeScript Migration
 
-When making significant changes:
+The project is currently being migrated from JavaScript to TypeScript. New rules have been added to support this migration:
 
-1. **CHANGELOG.md**:
-   - Add an entry under the `[Unreleased]` section
-   - Use the appropriate subsection (Added, Changed, Fixed)
-   - Be descriptive but concise
+### JS to TS Migration Rule
 
-2. **README.md**:
-   - Update feature lists if you've added new functionality
-   - Update examples if APIs have changed
-   - Add new sections for major features
+**Severity**: Warning
 
-## Severity Levels
+This rule identifies JavaScript files in the `lib/` directory that should be migrated to TypeScript. The goal is to convert all JavaScript files to TypeScript for improved type safety and maintainability.
 
-- **error**: Must be fixed before committing
-- **warning**: Should be fixed but can be bypassed if necessary
-- **info**: Recommendations for best practices
+### TypeScript Type Definitions Rule
+
+**Severity**: Warning
+
+This rule checks that TypeScript files include proper type definitions for parameters, return values, and variables.
+
+### JSDoc Completeness Rule
+
+**Severity**: Info
+
+This rule ensures that all functions in TypeScript and JavaScript files have complete JSDoc comments, including `@param` and `@returns` tags.
+
+## Integrated Commands
+
+New commands have been added to facilitate development and maintenance:
+
+- **Generate AI Documentation**: Create documentation using OpenAI or Claude
+- **Export to various formats**: Convert documentation to HTML, PDF, or Confluence
+- **Migrate JS to TS**: Helper commands for JavaScript to TypeScript migration
+- **Test All Exporters**: Run tests for all available exporters
+- **Generate Maintenance Report**: Create a status report of the maintenance progress
+- **Create Missing Type Definitions**: Automatically create skeleton TypeScript definitions
 
 ## How to Use Cursor Rules
 
@@ -64,8 +78,18 @@ Cursor rules are automatically applied when using the Cursor IDE. They provide:
 1. **Real-time feedback**: Cursor will highlight rule violations as you code
 2. **Hover information**: Hover over highlighted code to see rule explanations
 3. **Suggestions**: Cursor may provide automated suggestions to fix issues
+4. **Commands**: Access all defined commands through the command palette (Cmd+Shift+P)
 
 The rules in this project are designed to help maintain consistency and quality across the codebase, especially when implementing new exporters or modifying existing functionality.
+
+## Maintenance Plan
+
+The project follows a structured maintenance plan (see `maintenance-plan.md` in the root directory) with:
+
+- **Short-term measures** (1-3 months): JavaScript to TypeScript migration, dependency updates
+- **Mid-term measures** (3-6 months): Security improvements, documentation enhancements
+- **Long-term measures** (6-12 months): Feature extensions, performance optimizations
+- **Continuous tasks**: Code quality assurance, user feedback collection
 
 ## Updating Rules
 

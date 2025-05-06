@@ -1,10 +1,131 @@
 {
   "name": "doc-gen-mcp Cursorrules",
-  "version": "1.0.4",
+  "version": "1.1.0",
   "description": "Cursor rules for the doc-gen-mcp documentation generator",
   "author": "doc-gen-mcp Team",
   "project": "doc-gen-mcp",
   "repository": "https://github.com/micha-gh/doc-gen-mcp",
+  "metadata": {
+    "lastUpdated": "2023-07-06",
+    "releaseNotes": "Integration der neuen Wartungsplan-Anforderungen und Verbesserung der Befehle für JavaScript zu TypeScript Migration"
+  },
+  "commands": [
+    {
+      "name": "Generate AI Documentation (OpenAI)",
+      "command": "bin/gendoc.js --input ${fileDirname} --output ./docs/ai-doc-${fileBasenameNoExt}.md --ai --ai-provider openai --openai-key $OPENAI_API_KEY",
+      "description": "Generiere Dokumentation für den aktuellen Ordner mit OpenAI"
+    },
+    {
+      "name": "Generate AI Documentation (Claude)",
+      "command": "bin/gendoc.js --input ${fileDirname} --output ./docs/ai-doc-${fileBasenameNoExt}.md --ai --ai-provider anthropic --anthropic-key $ANTHROPIC_API_KEY",
+      "description": "Generiere Dokumentation für den aktuellen Ordner mit Anthropic Claude"
+    },
+    {
+      "name": "Generate Doc for Current File",
+      "command": "bin/gendoc.js --input ${file} --output ./docs/${fileBasenameNoExt}.md",
+      "description": "Generiere Dokumentation für die aktuelle Datei"
+    },
+    {
+      "name": "Export to Confluence",
+      "command": "bin/gendoc.js --input ${fileDirname} --confluence --page-title \"${fileBasenameNoExt} Dokumentation\"",
+      "description": "Exportiere Dokumentation nach Confluence"
+    },
+    {
+      "name": "Build TypeScript",
+      "command": "npm run build",
+      "description": "TypeScript kompilieren"
+    },
+    {
+      "name": "Run Tests",
+      "command": "npm test",
+      "description": "Alle Tests ausführen"
+    },
+    {
+      "name": "Update Dependencies",
+      "command": "npm outdated && echo 'Run: npm update' to update non-major versions",
+      "description": "Zeige veraltete Abhängigkeiten"
+    },
+    {
+      "name": "Lint Check",
+      "command": "npx eslint .",
+      "description": "Lint-Check für das gesamte Projekt"
+    },
+    {
+      "name": "Create Exporter Plugin",
+      "command": "mkdir -p src/exporters/${input:exporterName}Exporter && cp src/templates/exporter-template.ts src/exporters/${input:exporterName}Exporter.ts && code src/exporters/${input:exporterName}Exporter.ts",
+      "description": "Neues Exporter-Plugin erstellen"
+    },
+    {
+      "name": "Test Exporter Plugin",
+      "command": "npm run build && bin/gendoc.js --input test/samples/sample-entries.json --export-format ${input:exporterName}",
+      "description": "Exporter-Plugin testen"
+    },
+    {
+      "name": "Show Project Structure",
+      "command": "find . -type f -not -path \"./node_modules/*\" -not -path \"./dist/*\" | sort",
+      "description": "Zeige die Projektstruktur ohne node_modules und dist"
+    },
+    {
+      "name": "Project Health Check",
+      "command": "echo 'Checking dependencies...' && npm outdated && echo 'Running tests...' && npm test",
+      "description": "Führe einen Health-Check des Projekts durch"
+    },
+    {
+      "name": "Fix initializeExporters",
+      "command": "sed -i '' -e '/import initializeExporters/a\\initializeExporters();' bin/gendoc.js || echo 'Funktion bereits hinzugefügt oder nicht gefunden'",
+      "description": "Korrigiere die fehlende initializeExporters-Funktion in bin/gendoc.js"
+    },
+    {
+      "name": "Migrate JS to TS",
+      "command": "cp ${file} ${fileDirname}/${fileBasenameNoExt}.ts && code ${fileDirname}/${fileBasenameNoExt}.ts",
+      "description": "Migriere eine JavaScript-Datei zu TypeScript"
+    },
+    {
+      "name": "Migration Progress",
+      "command": "echo 'JS Files:' && find lib -name '*.js' | wc -l && echo 'TS Files:' && find src -name '*.ts' | wc -l",
+      "description": "Zeige den Fortschritt der JS zu TS Migration"
+    },
+    {
+      "name": "Initialize New Template",
+      "command": "cp -r src/templates/exporter-template src/exporters/${input:exporterName}Exporter",
+      "description": "Initialisiere einen neuen Exporter aus einem Template-Verzeichnis"
+    },
+    {
+      "name": "Generate HTML Documentation",
+      "command": "bin/gendoc.js --input ${fileDirname} --output ./docs/${fileBasenameNoExt}.html --export-format html",
+      "description": "Generiere HTML-Dokumentation für den aktuellen Ordner"
+    },
+    {
+      "name": "Generate PDF Documentation",
+      "command": "bin/gendoc.js --input ${fileDirname} --output ./docs/${fileBasenameNoExt}.pdf --export-format pdf",
+      "description": "Generiere PDF-Dokumentation für den aktuellen Ordner"
+    },
+    {
+      "name": "Test All Exporters",
+      "command": "for exporter in $(node -e \"console.log(require('./dist/core/plugins/ExporterManager.js').exporterManager.getAvailableExporters().join(' '))\"); do echo \"Testing $exporter exporter...\" && bin/gendoc.js --input test/samples/sample-entries.json --export-format $exporter --output ./test-output/$exporter-output; done",
+      "description": "Teste alle verfügbaren Exporter"
+    },
+    {
+      "name": "Find Missing JSDoc",
+      "command": "grep -r --include=\"*.ts\" -L \"/**\" src/ | grep -v \"index.ts\"",
+      "description": "Finde TypeScript-Dateien ohne JSDoc-Kommentare"
+    },
+    {
+      "name": "Generate Maintenance Report",
+      "command": "echo '# Wartungs-Status\n\n## JS zu TS Migration\n' > maintenance-status.md && echo '- JS Files: ' >> maintenance-status.md && find lib -name '*.js' | wc -l >> maintenance-status.md && echo '- TS Files: ' >> maintenance-status.md && find src -name '*.ts' | wc -l >> maintenance-status.md && echo '\n## Test-Abdeckung\n' >> maintenance-status.md && echo '- Testdateien: ' >> maintenance-status.md && find test -name '*.test.*' | wc -l >> maintenance-status.md && echo '\n## Abhängigkeiten\n' >> maintenance-status.md && npm outdated >> maintenance-status.md",
+      "description": "Generiere einen aktuellen Wartungsbericht als Markdown-Datei"
+    },
+    {
+      "name": "Create Missing Type Definitions",
+      "command": "for f in $(find lib -name '*.js'); do ts_file=\"src/$(echo $f | sed 's/lib\\///' | sed 's/\\.js$/.ts/')\"; mkdir -p $(dirname $ts_file); [ ! -f $ts_file ] && echo \"// Type definitions for $f\n\n// TODO: Convert this file from JavaScript to TypeScript\" > $ts_file && echo \"Created $ts_file\"; done",
+      "description": "Erstelle fehlende TypeScript-Definitionsdateien für JavaScript-Files"
+    },
+    {
+      "name": "Validate Config Schema",
+      "command": "node -e \"const fs = require('fs'); const config = JSON.parse(fs.readFileSync('${input:configFile}', 'utf-8')); console.log('Config schema valid:', !!config); console.log(config);\"",
+      "description": "Validiere ein Konfigurations-Schema"
+    }
+  ],
   "readme": "# Cursor Rules für doc-gen-mcp\n\nDiese Datei enthält Regeln für die Entwicklung im doc-gen-mcp Projekt mit der Cursor IDE.\n\n## Verwendung\n\n1. Die Regeln werden automatisch in Cursor geladen, wenn das Projekt geöffnet wird\n2. Regeln sind nach Kategorien geordnet und haben verschiedene Schweregrade (error, warning, info)\n3. Jede Regel hat ein Beispiel zur korrekten Implementierung\n\n## Kategorien\n\n- **Exporter Implementation**: Regeln für die Implementierung von Exporter-Plugins\n- **Documentation**: Regeln zur Dokumentation und Kommentierung\n- **Code Style**: Regeln zum Coding-Style und Best Practices\n- **Testing**: Regeln für Tests und Test-Coverage\n- **Project Management**: Regeln für Projektdokumentation und -verwaltung\n- **Best Practices**: Best Practices für die Implementierung von Exportern\n\n## Schweregrade\n\n- **error**: Muss behoben werden\n- **warning**: Sollte behoben werden\n- **info**: Empfehlung zur Verbesserung",
   "categories": [
     {
@@ -30,6 +151,10 @@
     {
       "name": "Best Practices",
       "description": "Best Practices für die Implementierung von Exportern und die Projektstruktur"
+    },
+    {
+      "name": "Wartungsplan",
+      "description": "Regeln zur Einhaltung des Wartungsplans und Migration von JavaScript zu TypeScript"
     }
   ],
   "rules": [
@@ -252,23 +377,45 @@
       "example": "await fs.promises.writeFile(outputPath, content);"
     },
     {
-      "category": "Best Practices",
-      "name": "Performance Considerations",
-      "pattern": "for\\s*\\([^)]+\\)\\s*\\{",
-      "description": "Bei großen Datenmengen sollten performante Methoden wie map/reduce statt Schleifen verwendet werden.",
+      "category": "Wartungsplan",
+      "name": "JS zu TS Migration",
+      "pattern": "\\.js$",
+      "filePattern": "^lib/.*\\.js$",
+      "description": "JavaScript-Dateien im lib-Verzeichnis sollten zu TypeScript migriert werden.",
+      "severity": "warning",
+      "example": "Konvertiere lib/utils.js zu src/utils.ts mit korrekten Typdefinitionen."
+    },
+    {
+      "category": "Wartungsplan",
+      "name": "TypeScript Typdefinitionen",
+      "pattern": ":\\s*(\\w+)(?:\\[\\])?",
+      "filePattern": "^src/.*\\.ts$",
+      "description": "TypeScript-Dateien sollten vollständige Typdefinitionen enthalten.",
+      "severity": "warning",
+      "example": "function processData(data: InputData): OutputData { ... }"
+    },
+    {
+      "category": "Wartungsplan",
+      "name": "JSDoc Vollständigkeit",
+      "pattern": "/\\*\\*[\\s\\S]*?@param[\\s\\S]*?@returns[\\s\\S]*?\\*/",
+      "filePattern": "^src/.*\\.(ts|js)$",
+      "description": "JSDoc-Kommentare sollten Parameter und Rückgabewerte dokumentieren.",
       "severity": "info",
-      "example": "const transformedSections = sections.map(section => transformSection(section));"
+      "example": "/**\n * Konvertiert Einträge in das Markdown-Format\n * @param {Entry[]} entries - Die zu konvertierenden Einträge\n * @param {FormatOptions} options - Formatierungsoptionen\n * @returns {string} Formatierter Markdown-Text\n */"
+    },
+    {
+      "category": "Wartungsplan",
+      "name": "Initialize Exporters Fix",
+      "pattern": "initializeExporters\\(\\);",
+      "filePattern": "^bin/gendoc\\.js$",
+      "description": "Die fehlende initializeExporters-Funktion muss in bin/gendoc.js aufgerufen werden.",
+      "severity": "error",
+      "example": "import initializeExporters from '../src/init/registerExporters.js';\n// ...\ninitializeExporters();"
     }
   ],
   "ignorePatterns": [
     "node_modules/",
     "dist/",
     ".git/"
-  ],
-  "metadata": {
-    "lastUpdated": "2023-08-28",
-    "maintainer": "doc-gen-mcp Team",
-    "supportEmail": "support@example.com",
-    "releaseNotes": "Version 1.0.4: Added README, improved categories, added Best Practices section"
-  }
+  ]
 } 
