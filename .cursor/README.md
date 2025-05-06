@@ -1,76 +1,82 @@
-# doc-gen-mcp Cursor Rules
+# Cursor Rules for doc-gen-mcp
 
-Dieses Verzeichnis enthält Konfigurationen für die Cursor IDE, die im doc-gen-mcp Projekt verwendet werden.
+This directory contains Cursor IDE rules that help maintain code quality and consistency in the doc-gen-mcp project.
 
-## Cursor Rules
+## Overview
 
-Die `cursorrules.json` Datei enthält projektspezifische Regeln, die bei der Entwicklung in der Cursor IDE automatisch angewendet werden. Diese Regeln helfen dabei, die Codequalität zu verbessern und einheitliche Implementierungen im Projekt zu fördern.
+The rules are defined in `cursorrules.json` and cover various aspects of the codebase:
 
-### Kategorisierte Regeln
+- **Exporter Implementation**: Rules for implementing exporter plugins
+- **Documentation**: Rules for maintaining proper documentation
+- **Code Style**: Guidelines for consistent code style
+- **Testing**: Requirements for proper test coverage
+- **Project Management**: Rules for project maintenance
+- **Best Practices**: General best practices for the project
 
-Die Regeln sind in verschiedene Kategorien unterteilt:
+## Documentation Update Rules
 
-- **Exporter Implementation**: Regeln für die Implementierung von Exporter-Plugins
-- **Documentation**: Regeln zur Dokumentation und Kommentierung
-- **Code Style**: Regeln zum Coding-Style und Best Practices
-- **Testing**: Regeln für Tests und Test-Coverage
-- **Project Management**: Regeln für Projektdokumentation und -verwaltung
-- **Best Practices**: Best Practices für die Implementierung von Exportern
+We've added special rules to ensure documentation stays current with code changes:
 
-### Schweregrade
+### Documentation Update Check
 
-Jede Regel hat einen Schweregrad:
+**Severity**: Warning
 
-- **error**: Muss behoben werden
-- **warning**: Sollte behoben werden
-- **info**: Empfehlung zur Verbesserung
+This rule reminds developers to update the `CHANGELOG.md` and `README.md` files when making significant changes to the codebase. These documentation files should be kept up-to-date to reflect:
 
-### Beispiel für eine Regel
+- New features
+- Bug fixes 
+- API changes
+- New exporters or functionality
+- Configuration changes
 
-```json
-{
-  "category": "Exporter Implementation",
-  "name": "Exporter Plugin Implementation",
-  "pattern": "class \\w+Exporter extends BaseExporter",
-  "description": "Exporter plugins müssen von BaseExporter erben und die Standardmethoden implementieren",
-  "severity": "error",
-  "example": "class MarkdownExporter extends BaseExporter { ... }",
-  "requiresImplementation": [
-    "isConfigured(): Promise<boolean>",
-    "export(content: ExportContent, options?: ExportOptions): Promise<ExportResult>"
-  ]
-}
-```
+### Pre-commit Hook
 
-## Wie Cursor Rules verwenden
+Additionally, a Git pre-commit hook has been set up to check if `CHANGELOG.md` and `README.md` have been modified when significant code changes are detected. The hook will:
 
-1. Installiere die Cursor IDE (https://cursor.sh/)
-2. Öffne das doc-gen-mcp Projekt in Cursor
-3. Die Regeln werden automatisch geladen und angewendet
-4. Überprüfe Warnungen und Fehler, die von den Regeln gemeldet werden
-5. Befolge die Beispiele, um deinen Code den Projektstandards anzupassen
+1. Check if any `.ts`, `.js`, or `.mjs` files in the `src/` directory or configuration files have been modified
+2. If so, verify that `README.md` and `CHANGELOG.md` are also being updated
+3. If not, warn the developer and ask if they want to proceed with the commit anyway
 
-## Regeln aktualisieren
+## How to Update Documentation Files
 
-Wenn du die Regeln aktualisieren möchtest, bearbeite die `cursorrules.json` Datei und:
+When making significant changes:
 
-1. Erhöhe die Versionsnummer
-2. Füge neue Regeln in der entsprechenden Kategorie hinzu
-3. Aktualisiere die `metadata.lastUpdated` und `metadata.releaseNotes`
-4. Beschreibe die Änderungen im nächsten Pull Request
+1. **CHANGELOG.md**:
+   - Add an entry under the `[Unreleased]` section
+   - Use the appropriate subsection (Added, Changed, Fixed)
+   - Be descriptive but concise
 
-## Weitere Cursor-Konfigurationen
+2. **README.md**:
+   - Update feature lists if you've added new functionality
+   - Update examples if APIs have changed
+   - Add new sections for major features
 
-In diesem Verzeichnis können weitere Konfigurationsdateien für die Cursor IDE gespeichert werden, wie z.B.:
+## Severity Levels
 
-- Cursor-spezifische Projekteinstellungen
-- Benutzerdefinierte Tastenkombinationen
-- IDE-Themes und Anpassungen
+- **error**: Must be fixed before committing
+- **warning**: Should be fixed but can be bypassed if necessary
+- **info**: Recommendations for best practices
 
-## Projekt Repository
+## How to Use Cursor Rules
 
-Der doc-gen-mcp Dokumentationsgenerator ist verfügbar unter: https://github.com/micha-gh/doc-gen-mcp
+Cursor rules are automatically applied when using the Cursor IDE. They provide:
 
-## Weitere Informationen
+1. **Real-time feedback**: Cursor will highlight rule violations as you code
+2. **Hover information**: Hover over highlighted code to see rule explanations
+3. **Suggestions**: Cursor may provide automated suggestions to fix issues
 
-Weitere Informationen zu Cursor Rules findest du in der [Cursor Dokumentation](https://cursor.sh/docs).
+The rules in this project are designed to help maintain consistency and quality across the codebase, especially when implementing new exporters or modifying existing functionality.
+
+## Updating Rules
+
+If you want to update the rules:
+
+1. Edit the `cursorrules.json` file
+2. Increment the version number
+3. Add new rules in the appropriate category
+4. Update `metadata.lastUpdated` and `metadata.releaseNotes`
+5. Describe the changes in your next pull request
+
+## Project Repository
+
+The doc-gen-mcp documentation generator is available at: https://github.com/micha-gh/doc-gen-mcp

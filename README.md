@@ -317,6 +317,25 @@ Available CLI options for exporters:
 - `--page-title`: For page-based exporters, use a single page with this title
 - `--labels`: Comma-separated list of labels for exported content
 
+### PDF Exporter
+
+The PDF exporter generates professional PDF documents from your documentation:
+
+```bash
+bin/gendoc.js --input ./src --output ./docs/api.pdf --export-format pdf
+```
+
+Key features include:
+
+- **Cover pages** with customizable titles, subtitles, and styling
+- **Table of contents** with configurable formatting and dot leaders
+- **Custom headers and footers** with page numbering
+- **Code blocks** with syntax formatting and background highlights
+- **Category-based organization** with clear visual separation
+- **Customizable styling** via configuration file (`config/pdf-exporter.json`)
+
+For detailed usage instructions, see [PDF Exporter Documentation](docs/pdf-exporter-usage.md).
+
 ### Creating Custom Exporters
 
 To create a custom exporter, extend the `BaseExporter` abstract class:

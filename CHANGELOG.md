@@ -33,6 +33,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New command `exportToConfluence` for programmatic use via MCP
 - Comprehensive documentation in `docs/confluence-integration.md`
 - Initial PDF exporter based on PDFKit with configurable pages, fonts, and styling
+  - Cover page generation with custom titles and styling
+  - Table of contents generation with configurable styles
+  - Customizable headers and footers
+  - Support for code blocks with syntax formatting
+  - Category-based content organization
+  - Custom color schemes and page styling
 - Implementation plan for future development and feature enhancements
 - Enhanced package.json with npm publishing support
 - Support for global CLI command via npm installation

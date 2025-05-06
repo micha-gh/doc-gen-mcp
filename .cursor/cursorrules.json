@@ -213,6 +213,14 @@
     },
     {
       "category": "Project Management",
+      "name": "Documentation Update Check",
+      "pattern": "(CHANGELOG\\.md|README\\.md)",
+      "description": "Bei signifikanten Änderungen (neue Features, Bugfixes, API-Änderungen) müssen CHANGELOG.md und README.md aktualisiert werden, bevor ein Commit erfolgt.",
+      "severity": "warning",
+      "example": "## [Unreleased]\n### Added\n- PDF Exporter mit Unterstützung für Cover-Seiten und Inhaltsverzeichnis"
+    },
+    {
+      "category": "Project Management",
       "name": "Roadmap Updates",
       "pattern": "Implementation Roadmap",
       "description": "Bei Abschluss von Features sollte diese in der Implementation Roadmap als abgeschlossen markiert werden.",
