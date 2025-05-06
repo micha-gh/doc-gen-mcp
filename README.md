@@ -20,7 +20,8 @@ doc-gen-mcp is a generic, extensible documentation generator for codebases, APIs
 - **Flexible input**: JSON, rulebase, API, config, or code files (JSDoc/TypeScript comments)
 - **AI-powered documentation**: OpenAI, Anthropic, Gemini, Cohere, Azure OpenAI
 - **Global configuration**: languages, output style, feature toggles
-- **Markdown or JSON output**: Grouped by category, customizable
+- **Multiple output formats**: Markdown, HTML, PDF, Confluence
+- **Plugin architecture for exporters**: Easily add new export formats with the exporter plugin system
 - **Validation and diff**: Validate docs, generate changelogs
 - **Multilingual**: English/German, easily extensible
 - **Extensible**: Add new formats, commands, output styles
@@ -32,6 +33,12 @@ doc-gen-mcp is a generic, extensible documentation generator for codebases, APIs
 ## Installation
 
 ```bash
+# Install globally from npm (coming soon)
+npm install -g doc-gen-mcp
+
+# Or install locally
+git clone https://github.com/micha-gh/doc-gen-mcp.git
+cd doc-gen-mcp
 npm install
 ```
 
@@ -39,34 +46,22 @@ npm install
 
 ## Quick Start / CLI Usage
 
-Generate Markdown documentation from JSON/config/rulebase or code files:
+Generate documentation from source code:
 
 ```bash
-bin/gendoc.js --input <file|dir> [--output <file>] [--config <file>] [--ai --ai-provider <provider> --<provider>-key <key> ...]
+# Generate documentation from a directory
+doc-gen --input ./src --output ./docs/api.md
+
+# Generate AI-powered documentation
+doc-gen --input ./src --output ./docs/api.md --ai --ai-provider openai
+
+# Export to different formats
+doc-gen --input ./src --output ./docs/api --export-format html
+doc-gen --input ./src --output ./docs/api.pdf --export-format pdf
+
+# Export to Confluence
+doc-gen --input ./src --confluence --page-title "API Documentation"
 ```
-
-**Examples:**
-
-- From JSON:
-  ```bash
-  bin/gendoc.js --input ./example-input.json --output ./docs/generated.md
-  ```
-- From a code file:
-  ```bash
-  bin/gendoc.js --input ./src/myModule.js --output ./docs/code-doc.md
-  ```
-- From a directory of code files:
-  ```bash
-  bin/gendoc.js --input ./src --output ./docs/all-code-doc.md
-  ```
-- AI-powered (OpenAI):
-  ```bash
-  bin/gendoc.js --input ./src --output ./docs/ai-code-doc.md --ai --ai-provider openai --openai-key $OPENAI_API_KEY
-  ```
-- Export to Confluence:
-  ```bash
-  bin/gendoc.js --input ./src --confluence --page-title "API Documentation" --labels api,docs
-  ```
 
 ---
 

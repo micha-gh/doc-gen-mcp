@@ -32,6 +32,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Support for multiple export strategies: single page, by category, or individual pages
 - New command `exportToConfluence` for programmatic use via MCP
 - Comprehensive documentation in `docs/confluence-integration.md`
+- Initial PDF exporter based on PDFKit with configurable pages, fonts, and styling
+- Implementation plan for future development and feature enhancements
+- Enhanced package.json with npm publishing support
+- Support for global CLI command via npm installation
+
+### Changed
+- Updated documentation to reflect new export formats and features
+- Improved README with clearer installation and usage instructions
 
 ### Fixed
 - Fixed compatibility issues in Confluence exporter with new plugin architecture
