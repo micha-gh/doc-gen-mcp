@@ -69,7 +69,7 @@ In diesem Verzeichnis können weitere Konfigurationsdateien für die Cursor IDE 
 
 ## Projekt Repository
 
-Die doc-gen-mcp Dokumentationsgenerator ist verfügbar unter: https://github.com/micha-gh/doc-gen-mcp
+Der doc-gen-mcp Dokumentationsgenerator ist verfügbar unter: https://github.com/micha-gh/doc-gen-mcp
 
 ## Weitere Informationen
 
