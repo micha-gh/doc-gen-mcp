@@ -1,0 +1,49 @@
+{
+  "fontFamily": "Helvetica",
+  "fontSize": {
+    "title": 24,
+    "heading": 18,
+    "subheading": 14,
+    "body": 12,
+    "code": 10
+  },
+  "pageSize": "A4",
+  "margins": {
+    "top": 72,
+    "bottom": 72,
+    "left": 72,
+    "right": 72
+  },
+  "includeTableOfContents": true,
+  "includeCoverPage": true,
+  "headerTemplate": "{{title}}",
+  "footerTemplate": "Page {{page}} of {{pages}}",
+  "colors": {
+    "primary": "#1a73e8",
+    "secondary": "#4285f4",
+    "text": "#202124",
+    "heading": "#202124",
+    "link": "#1a73e8",
+    "code": "#37474f",
+    "codeBackground": "#f5f5f5",
+    "border": "#dadce0"
+  },
+  "styles": {
+    "coverPage": {
+      "backgroundColor": "#f8f9fa",
+      "titleColor": "#1a73e8"
+    },
+    "toc": {
+      "indentSize": 15,
+      "dotLeaders": true
+    },
+    "codeBlock": {
+      "borderRadius": 4,
+      "padding": 10
+    },
+    "table": {
+      "headerBackgroundColor": "#f1f3f4",
+      "borderColor": "#dadce0"
+    }
+  }
+} 
