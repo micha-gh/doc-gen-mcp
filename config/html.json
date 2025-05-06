@@ -1,0 +1,17 @@
+{
+  "styles": {
+    "theme": "light",
+    "externalStylesheets": []
+  },
+  "scripts": {
+    "enableInteractiveFeatures": true,
+    "enableSearch": true,
+    "externalScripts": []
+  },
+  "display": {
+    "tableOfContents": true,
+    "categoryNavigation": true,
+    "breadcrumbs": true,
+    "metaInfo": true
+  }
+} 

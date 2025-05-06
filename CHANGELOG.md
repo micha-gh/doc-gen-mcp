@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- HTML exporter using the plugin architecture
+  - Customizable templates and CSS styling
+  - Interactive features including collapsible sections and search
+  - Table of contents generation
+  - Category navigation and breadcrumbs
+  - Light/Dark theme support
+  - Code syntax highlighting
 - Markdown exporter using the plugin architecture
   - Support for different Markdown flavors
   - Table of contents generation

@@ -29,10 +29,10 @@ This document outlines the planned implementation steps for the features describ
 
 ### 2️⃣ Additional Exporter Plugins (Phase 1)
 - [✅] Markdown exporter
-- [ ] HTML exporter
-  - [ ] Customizable templates
-  - [ ] CSS styling options
-  - [ ] Interactive features (collapsible sections, search)
+- [✅] HTML exporter
+  - [✅] Customizable templates
+  - [✅] CSS styling options
+  - [✅] Interactive features (collapsible sections, search)
 
 ### 3️⃣ Semantic Diff / Change Detector (Phase 2)
 - [ ] Git-based change detection
