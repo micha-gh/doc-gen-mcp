@@ -18,6 +18,14 @@ This document outlines the planned implementation steps for the features describ
 - ✅ Configurable heading levels and styling
 - ✅ File output capabilities
 
+### 📄 PDF Exporter Plugin
+- ✅ PDF generation from document entries using PDFKit
+- ✅ Cover page with custom titles and styling
+- ✅ Table of contents with configurable formatting
+- ✅ Custom headers and footers with page numbering
+- ✅ Code block formatting with syntax highlighting
+- ✅ Category-based organization and styling
+
 ## 🚀 Upcoming Features (Prioritized)
 
 ### 1️⃣ Enhanced Documentation Validator (Phase 1)
@@ -59,7 +67,7 @@ This document outlines the planned implementation steps for the features describ
 ### 6️⃣ Additional Exporter Plugins (Phase 3)
 - [ ] Notion exporter
 - [ ] Swagger/OpenAPI exporter
-- [ ] PDF exporter
+- [✅] PDF exporter
 - [ ] Wiki (MediaWiki) exporter
 
 ### 7️⃣ Live Feedback in IDE (Phase 4)

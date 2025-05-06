@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/micha-gh/doc-gen-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/micha-gh/doc-gen-mcp/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Changelog](https://img.shields.io/badge/Changelog-0.1.0-blue)](CHANGELOG.md)
+[![Changelog](https://img.shields.io/badge/Changelog-0.2.0--alpha-blue)](CHANGELOG.md)
 
 **Generic Documentation Generator MCP for Cursor AI**
 
