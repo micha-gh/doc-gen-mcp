@@ -6,6 +6,10 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { generateDocsFromInput } from '../lib/generateDocs.js';
 import https from 'https';
+// Import the exporter manager initialization
+import initializeExporters from '../src/init/registerExporters.js';
+// Import the exporter manager for use
+import { exporterManager } from '../src/core/plugins/ExporterManager.js';
 
 function printUsage() {
   console.error(`Usage: gendoc.js --input <file|dir> [--output <file>] [--config <file>] [--ai --ai-provider <provider> --<provider>-key <key> ...]`);
@@ -21,12 +25,16 @@ function printUsage() {
   console.error(`  --azure-openai-key Azure OpenAI API key (for --ai-provider azure-openai)`);
   console.error(`  --azure-openai-endpoint Azure OpenAI endpoint (for --ai-provider azure-openai)`);
   console.error(``);
-  console.error(`Confluence Export Options:`);
-  console.error(`  --confluence      Export to Confluence`);
+  console.error(`Export Options:`);
+  console.error(`  --export-format   Format to export to (available: ${exporterManager.getAvailableExporters().join(', ')})`);
+  console.error(`  --exporter-config Path to exporter config file (default: config/exporters.json)`);
+  console.error(`  --by-category     Export separate pages by category`);
+  console.error(`  --page-title      For page-based exporters: use a single page with this title`);
+  console.error(`  --labels          Comma-separated list of labels for exported content`);
+  console.error(``);
+  console.error(`Confluence Export Options (legacy):`);
+  console.error(`  --confluence      Export to Confluence (legacy mode)`);
   console.error(`  --confluence-config Path to Confluence config file (default: config/confluence.json)`);
-  console.error(`  --by-category     Export separate Confluence pages by category`);
-  console.error(`  --page-title      For Confluence: use a single page with this title`);
-  console.error(`  --labels          Comma-separated list of labels for Confluence pages`);
 }
 
 function parseArgs() {
@@ -49,6 +57,8 @@ function parseArgs() {
     else if (args[i] === '--by-category') opts.byCategory = true;
     else if (args[i] === '--page-title') opts.pageTitle = args[++i];
     else if (args[i] === '--labels') opts.labels = args[++i].split(',');
+    else if (args[i] === '--export-format') opts.exportFormat = args[++i];
+    else if (args[i] === '--exporter-config') opts.exporterConfig = args[++i];
     else if (args[i] === '--help' || args[i] === '-h') opts.help = true;
   }
   return opts;
@@ -273,6 +283,9 @@ function getAIOptions(opts) {
 }
 
 async function main() {
+  // Initialize all available exporters
+  await initializeExporters();
+  
   const opts = parseArgs();
   
   if (opts.help) {
@@ -352,11 +365,53 @@ async function main() {
       config = JSON.parse(configContent);
     }
     
-    if (opts.confluence) {
-      // Export to Confluence
+    // Use new exporter system if export format is specified
+    if (opts.exportFormat) {
+      console.log(`Exporting documentation to ${opts.exportFormat}...`);
+      
+      const exporter = exporterManager.getExporter(opts.exportFormat);
+      if (!exporter) {
+        console.error(`Error: Exporter '${opts.exportFormat}' not found. Available exporters: ${exporterManager.getAvailableExporters().join(', ')}`);
+        process.exit(1);
+      }
+      
+      // Check if exporter is configured
+      if (!(await exporter.isConfigured())) {
+        console.error(`Error: Exporter '${opts.exportFormat}' is not properly configured.`);
+        process.exit(1);
+      }
+      
+      // Export using the exporter plugin
+      const result = await exporter.export(
+        {
+          entries: inputData.entries,
+          rawContent: inputData.rawContent
+        },
+        {
+          title: opts.pageTitle,
+          configPath: opts.exporterConfig,
+          byCategory: opts.byCategory,
+          labels: opts.labels,
+          validateBeforeExport: true
+        }
+      );
+      
+      if (result.success) {
+        console.log(`Documentation successfully exported to ${opts.exportFormat}`);
+        if (result.details) {
+          console.log('Export details:', JSON.stringify(result.details, null, 2));
+        }
+      } else {
+        console.error(`Error: ${result.error}`);
+        process.exit(1);
+      }
+    }
+    // Legacy Confluence export
+    else if (opts.confluence) {
+      // Export to Confluence using legacy approach
       const { exportToConfluence } = await import('../lib/confluenceCommand.js');
       
-      console.log('Exporting documentation to Confluence...');
+      console.log('Exporting documentation to Confluence (legacy mode)...');
       
       const result = await exportToConfluence({
         input: inputData,

@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Added
+- Plugin architecture for exporters with BaseExporter abstract class and ExporterManager
+- Modular export system supporting multiple export targets through plugins
+- Refactored Confluence exporter to use the new plugin architecture
+- New command line flag `--export-format` to use the plugin-based exporters
+- Support for exporter configuration via `--exporter-config` flag
 - Confluence integration for exporting documentation to Confluence pages
 - TypeScript support and transpilation with `npm run build`
 - Enhanced Markdown to Confluence HTML converter with support for code blocks, macros, and special formatting

@@ -299,6 +299,82 @@ test/                       # Unit tests (Jest, ESM)
 
 ---
 
+## Exporter Plugin Architecture
+
+doc-gen-mcp now supports a flexible plugin architecture for exporters, making it easy to add new export targets. The system is built around:
+
+- **BaseExporter**: An abstract class that defines the interface all exporters must implement
+- **ExporterManager**: A manager class that handles registration and instantiation of exporters
+
+### Using Exporters
+
+To use an exporter with the CLI:
+
+```bash
+bin/gendoc.js --input ./src --export-format confluence --page-title "API Documentation"
+```
+
+Available CLI options for exporters:
+
+- `--export-format`: The format to export to (e.g., confluence, markdown, html)
+- `--exporter-config`: Path to exporter configuration file
+- `--by-category`: Export separate pages by category
+- `--page-title`: For page-based exporters, use a single page with this title
+- `--labels`: Comma-separated list of labels for exported content
+
+### Creating Custom Exporters
+
+To create a custom exporter, extend the `BaseExporter` abstract class:
+
+```typescript
+import { BaseExporter, ExportContent, ExportOptions, ExportResult } from '../core/plugins/BaseExporter.js';
+
+export class MyCustomExporter extends BaseExporter {
+  public readonly name = 'mycustom';
+  public readonly description = 'My custom exporter';
+  public readonly supportedFormats = ['custom'];
+  public readonly defaultConfigPath = './config/mycustom.json';
+  
+  public async isConfigured(): Promise<boolean> {
+    // Check if the exporter is properly configured
+  }
+  
+  public async export(content: ExportContent, options?: ExportOptions): Promise<ExportResult> {
+    // Implement export logic
+  }
+  
+  public async loadConfig(configPath?: string): Promise<any> {
+    // Load exporter configuration
+  }
+  
+  public async validateContent(content: ExportContent): Promise<{
+    valid: boolean;
+    issues?: Array<{message: string; severity: 'error' | 'warning' | 'info'}>;
+  }> {
+    // Validate content before export
+  }
+}
+
+// Export default for dynamic loading
+export default MyCustomExporter;
+```
+
+To register your exporter, add it to `src/init/registerExporters.ts`:
+
+```typescript
+import MyCustomExporter from '../exporters/MyCustomExporter.js';
+
+export async function registerBuiltinExporters(): Promise<void> {
+  // Register built-in exporters
+  exporterManager.registerExporter('confluence', () => new ConfluenceExporter());
+  exporterManager.registerExporter('mycustom', () => new MyCustomExporter());
+  
+  console.log('Registered built-in exporters');
+}
+```
+
+---
+
 ## Contributing, License, and Contact
 
 - **License:** MIT (see LICENSE)
